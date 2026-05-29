@@ -1005,15 +1005,6 @@ function renderHome(main) {
     html += `</div>`;
   }
 
-  // PDF section teaser
-  const pdfs = cachedPDFs;
-  if (pdfs.length) {
-    html += sectionHeader('📄 PDF Articles', 'pdfs');
-    html += `<div class="card-grid">`;
-    pdfs.slice(0,4).forEach(p => { html += pdfCard(p); });
-    html += `</div>`;
-  }
-
   main.innerHTML = html;
 }
 
