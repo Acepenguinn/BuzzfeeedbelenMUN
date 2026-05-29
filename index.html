@@ -814,6 +814,7 @@ const PASSWORD = '06107qW!';
 let currentPage = 'home';
 let currentSection = null;
 let selectedPdfData = null;
+let selectedImageFile = null;
 let isAdminMode = false;
 let deletedArticleIds = [];
 let cachedPDFs = [];
@@ -950,14 +951,14 @@ function renderHome(main) {
     if (!combined.length) return;
     html += sectionHeader(sec.label, sec.id);
     html += `<div class="card-grid">`;
-    combined.forEach(a => { html += a.pdfData ? pdfCard(a) : articleCard(a); });
+    combined.forEach(a => { html += (a.pdfData || a.pdf_data) ? pdfCard(a) : articleCard(a); });
     html += `</div>`;
   });
 
   if (trending4.length) {
     html += sectionHeader('🔥 Trending Now', 'trending');
     html += `<div class="card-grid">`;
-    trending4.forEach(a => { html += a.pdfData ? pdfCard(a) : articleCard(a); });
+    trending4.forEach(a => { html += (a.pdfData || a.pdf_data) ? pdfCard(a) : articleCard(a); });
     html += `</div>`;
   }
 
@@ -974,7 +975,7 @@ function renderSection(main, sec) {
     html += `<div class="no-results">No articles in this section yet.</div>`;
   } else {
     html += `<div class="card-grid three-col">`;
-    combined.forEach(a => { html += a.pdfData ? pdfCard(a) : articleCard(a); });
+    combined.forEach(a => { html += (a.pdfData || a.pdf_data) ? pdfCard(a) : articleCard(a); });
     html += `</div>`;
   }
   main.innerHTML = html;
@@ -988,8 +989,8 @@ function renderTrending(main) {
   let html = sectionHeader('🔥 Trending Now', null);
   html += `<div class="trending-list">`;
   combined.forEach((a,i) => {
-    const isPdf = !!a.pdfData;
-    const clickFn = isPdf ? `openPDF('${a.id}')` : `openArticle(${a.id})`;
+    const isPdf = !!(a.pdfData || a.pdf_data);
+    const clickFn = isPdf ? `openPDF('${a.id}')` : `openArticle('${a.id}')`;
     const thumb = isPdf
       ? `<div class="trend-img" style="background:#fff0f0;display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--red);border-radius:3px;">📄</div>`
       : `<img class="trend-img" src="${a.image}" alt="${esc(a.title)}">`;
@@ -1059,7 +1060,8 @@ function waveBanner(tag, title, author, date, backFn, delBtn) {
 
 /* ── ARTICLE OPEN ── */
 function openArticle(id) {
-  const a = getVisibleArticles().find(x=>x.id===id);
+  const idNum = isNaN(id) ? id : Number(id);
+  const a = getVisibleArticles().find(x=>x.id===idNum||x.id===id);
   if (!a) return;
   const main = document.getElementById('mainContent');
   const delBtnLabel = isAdminMode ? `🗑 Delete` : '';
@@ -1162,7 +1164,7 @@ function renderSearch(query) {
     html += `<div class="no-results">No articles matched your search.</div>`;
   } else {
     html += `<div class="card-grid three-col">`;
-    combined.forEach(a => { html += a.pdfData ? pdfCard(a) : articleCard(a); });
+    combined.forEach(a => { html += (a.pdfData || a.pdf_data) ? pdfCard(a) : articleCard(a); });
     html += `</div>`;
   }
   html += `</div>`;
@@ -1210,9 +1212,10 @@ function setupDropZone() {
 }
 
 function readImage(file) {
+  selectedImageFile = file; // store raw File for upload
   const reader = new FileReader();
   reader.onload = function(e) {
-    selectedPdfData = e.target.result;
+    selectedPdfData = e.target.result; // keep base64 for preview only
     document.getElementById('pdfChosen').textContent = '✓ ' + file.name;
     const preview = document.getElementById('imgPreview');
     preview.src = e.target.result;
@@ -1240,6 +1243,40 @@ async function savePDF() {
   if (!selectedPdfData) { alert('Please choose a cover image.'); return; }
   if (!body || body === '') { alert('Please write some article content.'); return; }
 
+  const btn = document.querySelector('#pdfModal .btn-primary');
+  if (btn) { btn.textContent = 'Uploading…'; btn.disabled = true; }
+
+  let imageUrl = selectedPdfData; // fallback to base64 if storage fails
+
+  // Upload image to Supabase Storage if we have the raw file
+  if (selectedImageFile) {
+    try {
+      const fileExt = selectedImageFile.name.split('.').pop().toLowerCase();
+      const fileName = 'img_' + Date.now() + '.' + fileExt;
+      const uploadRes = await fetch(
+        SUPABASE_URL + '/storage/v1/object/article-images/' + fileName,
+        {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Content-Type': selectedImageFile.type,
+            'x-upsert': 'true'
+          },
+          body: selectedImageFile
+        }
+      );
+      if (uploadRes.ok) {
+        imageUrl = SUPABASE_URL + '/storage/v1/object/public/article-images/' + fileName;
+      } else {
+        const errText = await uploadRes.text();
+        console.warn('Storage upload failed, using base64 fallback:', errText);
+      }
+    } catch(e) {
+      console.warn('Storage upload error, using base64 fallback:', e);
+    }
+  }
+
   const newArticle = {
     id: 'pdf_' + Date.now(),
     title,
@@ -1249,7 +1286,7 @@ async function savePDF() {
     excerpt: document.getElementById('pdfExcerpt').value.trim(),
     date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }),
     trending: document.getElementById('pdfTrending').value === 'yes',
-    pdf_data: selectedPdfData,
+    pdf_data: imageUrl,
     body_html: body
   };
 
@@ -1257,12 +1294,14 @@ async function savePDF() {
     await sbFetch('pdfs', { method: 'POST', body: newArticle });
     cachedPDFs.unshift({ ...newArticle });
   } catch(e) {
+    if (btn) { btn.textContent = 'Publish Article →'; btn.disabled = false; }
     alert('Upload failed: ' + e.message);
     return;
   }
 
   document.getElementById('uploadSuccess').style.display = 'block';
   selectedPdfData = null;
+  selectedImageFile = null;
   document.getElementById('pdfChosen').textContent = '';
   document.getElementById('pdfTitle').value = '';
   document.getElementById('articleBody').innerHTML = '';
@@ -1270,7 +1309,8 @@ async function savePDF() {
   document.getElementById('dzIcon').style.display = 'block';
   document.getElementById('dzText').style.display = 'block';
 
-  setTimeout(() => { closeModal(); showPage('pdfs'); }, 1200);
+  if (btn) { btn.textContent = 'Publish Article →'; btn.disabled = false; }
+  setTimeout(() => { closeModal(); showPage(currentPage); }, 1200);
 }
 
 /* ── DELETE PDF ── */
