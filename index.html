@@ -1,1668 +1,4253 @@
+cat > /mnt/user-data/outputs/buzzfeed_updated.html << 'HTMLEOF'
+
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>BuzzFeed</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+
 <style>
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+
+
   :root {
+
     --red: #e8001c;
+
     --black: #111;
+
     --white: #fff;
+
     --gray: #f4f4f4;
+
     --mid: #888;
+
     --border: #e2e2e2;
+
     --card-radius: 4px;
+
   }
+
+
 
   body { font-family: 'Barlow', sans-serif; background: #fff; color: #111; }
 
+
+
   /* ── NAV ── */
+
   .topbar-wrapper { position:sticky; top:0; z-index:100; }
+
   .ticker-bar { background:#111; color:#fff; font-family:'Barlow',sans-serif; font-size:12px; font-weight:700; display:flex; align-items:center; height:30px; overflow:hidden; }
+
   .ticker-label { background:var(--red); color:#fff; padding:0 14px; height:100%; display:flex; align-items:center; text-transform:uppercase; letter-spacing:1px; font-size:11px; white-space:nowrap; flex-shrink:0; }
+
   .ticker-track { display:flex; gap:0; overflow:hidden; flex:1; }
+
   .ticker-inner { display:flex; gap:48px; animation:ticker 30s linear infinite; white-space:nowrap; padding-left:24px; }
+
   .ticker-inner span { color:rgba(255,255,255,0.75); cursor:pointer; transition:color .15s; }
+
   .ticker-inner span:hover { color:var(--red); }
+
   @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
+
+
   .topbar { background: var(--red); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+
   .logo-wrap { display:flex; flex-direction:column; align-items:flex-start; cursor:pointer; }
+
   .logo { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 3px; cursor: pointer; line-height:1; background:linear-gradient(90deg,#fff,#ffe066,#fff,#ffe066); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:logoWave 4s linear infinite; }
+
   @keyframes logoWave { 0%{background-position:0% center} 100%{background-position:200% center} }
+
   .logo-tagline { font-size:9px; color:rgba(255,255,255,0.6); letter-spacing:2px; text-transform:uppercase; font-family:'Barlow',sans-serif; font-weight:700; margin-top:-2px; }
+
   .nav-links { display: flex; gap: 2px; }
+
   .nav-links button { background: none; border: none; color: rgba(255,255,255,0.85); font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px; cursor: pointer; border-radius: 3px; transition: background .15s, color .15s; }
+
   .nav-links button:hover, .nav-links button.active { background: rgba(255,255,255,0.2); color: #fff; }
+
   .search-wrap { display: flex; align-items: center; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 12px; gap: 6px; }
+
   .search-wrap input { background: none; border: none; outline: none; color: #fff; font-family: 'Barlow', sans-serif; font-size: 14px; width: 160px; }
+
   .search-wrap input::placeholder { color: rgba(255,255,255,0.6); }
+
   .search-wrap svg { width: 16px; height: 16px; fill: none; stroke: rgba(255,255,255,0.7); stroke-width: 2; flex-shrink: 0; }
 
+
+
   /* ── CATEGORY BAR ── */
+
   .catbar { border-bottom: 3px solid var(--red); background: #fff; display: flex; overflow-x: auto; scrollbar-width: none; }
+
   .catbar::-webkit-scrollbar { display: none; }
+
   .catbar button { white-space: nowrap; padding: 12px 20px; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .5px; border: none; background: none; cursor: pointer; color: #555; border-bottom: 3px solid transparent; margin-bottom: -3px; transition: color .15s, border-color .15s; }
+
   .catbar button:hover { color: var(--red); }
+
   .catbar button.active { color: var(--red); border-bottom-color: var(--red); }
 
+
+
   /* ── HERO ── */
+
   .hero { display: grid; grid-template-columns: 2fr 1fr; gap: 0; max-height: 480px; overflow: hidden; border-bottom: 1px solid var(--border); }
+
   .hero-main { position: relative; cursor: pointer; overflow: hidden; }
+
   .hero-main img { width: 100%; height: 480px; object-fit: cover; display: block; transition: transform .4s; }
+
   .hero-main:hover img { transform: scale(1.03); }
+
   .hero-main .hero-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,.85)); padding: 48px 28px 28px; }
+
   .hero-main .hero-cat { background: var(--red); color: #fff; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 3px 10px; display: inline-block; margin-bottom: 10px; }
+
   .hero-main h1 { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: #fff; line-height: 1.05; letter-spacing: 1px; }
+
   .hero-main .hero-meta { color: rgba(255,255,255,.65); font-size: 13px; margin-top: 8px; }
 
+
+
   .hero-side { display: flex; flex-direction: column; border-left: 1px solid var(--border); }
+
   .hero-side .side-card { cursor: pointer; display: flex; gap: 0; flex: 1; border-bottom: 1px solid var(--border); overflow: hidden; }
+
   .hero-side .side-card:last-child { border-bottom: none; }
+
   .hero-side .side-card img { width: 130px; height: 100%; object-fit: cover; flex-shrink: 0; transition: transform .3s; }
+
   .hero-side .side-card:hover img { transform: scale(1.05); }
+
   .hero-side .side-card .side-info { padding: 14px 16px; display: flex; flex-direction: column; justify-content: center; }
+
   .hero-side .side-card .side-cat { font-size: 10px; font-weight: 800; color: var(--red); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px; }
+
   .hero-side .side-card h3 { font-family: 'Barlow', sans-serif; font-weight: 800; font-size: 15px; line-height: 1.25; color: #111; }
 
+
+
   /* ── SECTION HEADER ── */
+
   .section-header { display: flex; align-items: center; gap: 14px; padding: 28px 24px 16px; }
+
   .section-header h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; color: #111; }
+
   .section-header .line { flex: 1; height: 2px; background: var(--border); }
+
   .section-header .see-all { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--red); text-decoration: none; cursor: pointer; border: none; background: none; }
 
+
+
   /* ── CARD GRID ── */
+
   .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 0 24px 32px; }
+
   .card-grid.three-col { grid-template-columns: repeat(3, 1fr); }
+
   .card-grid.two-col { grid-template-columns: repeat(2, 1fr); }
+
   .card { cursor: pointer; border-radius: var(--card-radius); overflow: hidden; transition: transform .2s; }
+
   .card:hover { transform: translateY(-3px); }
+
   .card img { width: 100%; height: 200px; object-fit: cover; display: block; }
+
   .card .card-body { padding: 12px 2px 8px; }
+
   .card .card-cat { font-size: 10px; font-weight: 800; color: var(--red); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px; }
+
   .card h3 { font-weight: 800; font-size: 16px; line-height: 1.3; color: #111; }
+
   .card .card-meta { font-size: 12px; color: var(--mid); margin-top: 6px; }
 
+
+
   /* ── TRENDING ── */
+
   .trending-list { padding: 0 24px 32px; display: flex; flex-direction: column; gap: 0; }
+
   .trend-item { display: flex; align-items: flex-start; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .1s; }
+
   .trend-item:hover .trend-title { color: var(--red); }
+
   .trend-num { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: var(--border); line-height: 1; flex-shrink: 0; width: 52px; text-align: center; }
+
   .trend-img { width: 120px; height: 90px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
+
   .trend-body { flex: 1; padding-top: 4px; }
+
   .trend-cat { font-size: 10px; font-weight: 800; color: var(--red); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px; }
+
   .trend-title { font-weight: 800; font-size: 18px; line-height: 1.25; color: #111; transition: color .15s; }
+
   .trend-meta { font-size: 12px; color: var(--mid); margin-top: 6px; }
 
+
+
   /* ── ABOUT ── */
+
   .about-page { max-width: 800px; margin: 48px auto; padding: 0 24px 64px; }
+
   .about-page h1 { font-family: 'Bebas Neue', sans-serif; font-size: 56px; color: var(--red); margin-bottom: 8px; }
+
   .about-page .tagline { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 24px; }
+
   .about-page p { font-size: 17px; line-height: 1.75; color: #333; margin-bottom: 18px; }
 
+
+
   /* ── ARTICLE VIEW ── */
+
   .article-page { max-width: 760px; margin: 0 auto; padding: 36px 24px 80px; }
+
   .article-page .art-cat { font-size: 11px; font-weight: 800; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+
   .article-page h1 { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 1.05; letter-spacing: .5px; margin-bottom: 18px; }
+
   .article-page .art-meta { font-size: 13px; color: var(--mid); margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+
   .article-page .art-hero-img { width: 100%; max-height: 480px; object-fit: cover; border-radius: 4px; margin-bottom: 32px; }
+
   .article-body { font-size: 18px; line-height: 1.75; color: #222; }
+
   .article-body p { margin-bottom: 20px; }
+
   .article-body h2 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; margin: 36px 0 14px; color: #111; letter-spacing: .5px; }
+
   .article-body h3 { font-weight: 800; font-size: 22px; margin: 28px 0 12px; }
+
   .article-body img { width: 100%; border-radius: 4px; margin: 24px 0; }
+
   .article-body img.img-left { float: left; width: 48%; margin: 0 20px 16px 0; }
+
   .article-body img.img-right { float: right; width: 48%; margin: 0 0 16px 20px; }
+
   .article-body blockquote { border-left: 5px solid var(--red); padding: 12px 20px; margin: 28px 0; background: #fafafa; font-style: italic; font-size: 20px; color: #444; }
+
   .article-body ul, .article-body ol { margin: 0 0 20px 24px; }
+
   .article-body li { margin-bottom: 8px; }
+
   .article-body .number-item { display: flex; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+
   .article-body .number-item .num { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--red); line-height: 1; flex-shrink: 0; }
+
   .article-body .number-item .num-body h4 { font-weight: 800; font-size: 20px; margin-bottom: 6px; }
+
   .back-btn { background: none; border: 2px solid var(--border); padding: 8px 18px; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .5px; cursor: pointer; border-radius: 3px; margin-bottom: 24px; display: inline-flex; align-items: center; gap: 6px; transition: border-color .15s, color .15s; }
+
   .back-btn:hover { border-color: var(--red); color: var(--red); }
 
+
+
   /* ── SEARCH RESULTS ── */
+
   .search-results-page { padding: 32px 24px; }
+
   .search-results-page h2 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; margin-bottom: 24px; }
+
   .no-results { text-align: center; padding: 80px 24px; color: var(--mid); font-size: 18px; font-weight: 600; }
 
+
+
   /* ── FOOTER ── */
+
   footer { background: #111; color: #aaa; padding: 36px 24px; text-align: center; font-size: 13px; }
+
   footer .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--red); margin-bottom: 12px; }
+
   footer p { max-width: 500px; margin: 0 auto; line-height: 1.6; }
 
+
+
   /* ── UTILS ── */
+
   .page { display: none; }
+
   .page.active { display: block; }
+
   .clearfix::after { content: ''; display: table; clear: both; }
 
+
+
   /* ── PDF MODAL ── */
+
   .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; align-items:center; justify-content:center; }
+
   .modal-backdrop.open { display:flex; }
+
   .modal { background:#fff; border-radius:8px; width:560px; max-width:95vw; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.3); }
+
   .modal-head { background:var(--red); padding:20px 24px; display:flex; align-items:center; justify-content:space-between; border-radius:8px 8px 0 0; }
+
   .modal-head h2 { font-family:'Bebas Neue',sans-serif; font-size:26px; color:#fff; letter-spacing:1px; }
+
   .modal-head button { background:none; border:none; color:#fff; font-size:22px; cursor:pointer; line-height:1; }
+
   .modal-body { padding:24px; display:flex; flex-direction:column; gap:16px; }
+
   .field-label { font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.5px; color:#444; display:block; margin-bottom:6px; }
+
   .modal-body input[type=text], .modal-body select, .modal-body textarea { width:100%; padding:10px 14px; border:2px solid var(--border); border-radius:4px; font-family:'Barlow',sans-serif; font-size:15px; outline:none; transition:border-color .15s; }
+
   .modal-body input[type=text]:focus, .modal-body select:focus, .modal-body textarea:focus { border-color:var(--red); }
+
   .modal-body textarea { min-height:80px; resize:vertical; }
+
   .drop-zone { border:2px dashed var(--border); border-radius:6px; padding:36px; text-align:center; cursor:pointer; transition:border-color .15s, background .15s; }
+
   .drop-zone:hover, .drop-zone.over { border-color:var(--red); background:#fff5f5; }
+
   .drop-zone .dz-icon { font-size:36px; margin-bottom:10px; }
+
   .drop-zone p { color:#666; font-size:14px; }
+
   .drop-zone strong { color:var(--red); }
+
   .drop-zone input[type=file] { display:none; }
+
   .pdf-chosen { font-size:13px; color:var(--red); font-weight:700; margin-top:8px; }
+
   .modal-actions { display:flex; gap:12px; justify-content:flex-end; padding:0 24px 24px; }
+
   .btn-primary { background:var(--red); color:#fff; border:none; padding:11px 28px; font-family:'Barlow',sans-serif; font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:.5px; border-radius:4px; cursor:pointer; transition:opacity .15s; }
+
   .btn-primary:hover { opacity:.88; }
+
   .btn-cancel { background:none; color:#666; border:2px solid var(--border); padding:11px 20px; font-family:'Barlow',sans-serif; font-weight:700; font-size:14px; border-radius:4px; cursor:pointer; }
+
   /* ── ARTICLE EDITOR ── */
+
   .article-toolbar { display:flex; flex-wrap:wrap; gap:4px; background:#f5f5f5; border:1px solid #ddd; border-bottom:none; border-radius:6px 6px 0 0; padding:6px 8px; }
+
   .article-toolbar button { background:#fff; border:1px solid #ddd; border-radius:4px; padding:3px 9px; font-size:12px; cursor:pointer; font-family:'Barlow',sans-serif; font-weight:600; transition:background .1s; }
+
   .article-toolbar button:hover { background:var(--red); color:#fff; border-color:var(--red); }
+
   .article-editor { min-height:180px; border:1px solid #ddd; border-radius:0 0 6px 6px; padding:12px; font-size:14px; line-height:1.6; outline:none; font-family:'Barlow',sans-serif; color:#222; }
+
   .article-editor:empty::before { content:attr(placeholder); color:#bbb; pointer-events:none; }
+
   .article-editor h2 { font-family:'Bebas Neue',sans-serif; font-size:26px; margin:12px 0 6px; }
 
+
+
   /* ── WAVY ARTICLE HEADER ── */
+
   .article-wave-banner { position:relative; width:100%; overflow:hidden; background:linear-gradient(160deg,#ff4500 0%,#ff8c00 60%,#ffb700 100%); min-height:320px; display:flex; align-items:flex-end; }
+
   .article-wave-banner svg.wave-shape { position:absolute; bottom:-1px; left:0; width:100%; height:90px; display:block; }
+
   .article-wave-banner .banner-content { position:relative; z-index:2; width:100%; max-width:760px; margin:0 auto; padding:48px 24px 80px; }
+
   .banner-back-btn { background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.4); color:#fff; padding:7px 16px; font-family:'Barlow',sans-serif; font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:.5px; cursor:pointer; border-radius:3px; margin-bottom:20px; display:inline-flex; align-items:center; gap:6px; transition:background .15s; }
+
   .banner-back-btn:hover { background:rgba(255,255,255,0.35); }
+
   .banner-delete-btn { float:right; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.3); color:rgba(255,255,255,0.8); font-size:11px; font-family:'Barlow',sans-serif; font-weight:700; padding:6px 14px; border-radius:4px; cursor:pointer; text-transform:uppercase; letter-spacing:.5px; transition:background .15s; }
+
   .banner-delete-btn:hover { background:rgba(0,0,0,0.5); color:#fff; }
+
   .banner-tag { display:inline-block; background:rgba(0,0,0,0.25); color:#fff; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; padding:4px 12px; border-radius:2px; margin-bottom:14px; }
+
   .banner-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(36px,6vw,68px); color:#fff; line-height:1.02; letter-spacing:1px; text-shadow:0 3px 16px rgba(0,0,0,0.2); margin-bottom:14px; }
+
   .banner-meta { color:rgba(255,255,255,0.8); font-size:14px; font-weight:600; }
 
+
+
   /* ── COMMENTS ── */
+
   .comments-section { max-width:760px; margin:48px auto 0; padding:0 24px 80px; border-top:3px solid var(--border); }
+
   .comments-title { font-family:'Bebas Neue',sans-serif; font-size:28px; color:#111; margin:28px 0 20px; letter-spacing:.5px; }
+
   .comment-form { display:flex; flex-direction:column; gap:10px; margin-bottom:32px; }
+
   .comment-form input, .comment-form textarea { border:2px solid var(--border); border-radius:4px; padding:10px 14px; font-family:'Barlow',sans-serif; font-size:14px; outline:none; transition:border-color .15s; }
+
   .comment-form input:focus, .comment-form textarea:focus { border-color:var(--red); }
+
   .comment-form textarea { min-height:80px; resize:vertical; }
+
   .comment-form button { align-self:flex-end; background:var(--red); color:#fff; border:none; padding:10px 24px; font-family:'Barlow',sans-serif; font-weight:800; font-size:13px; text-transform:uppercase; letter-spacing:.5px; border-radius:4px; cursor:pointer; transition:opacity .15s; }
+
   .comment-form button:hover { opacity:.85; }
+
   .comment-list { display:flex; flex-direction:column; gap:0; }
+
   .comment-item { padding:18px 0; border-bottom:1px solid var(--border); display:flex; gap:14px; }
+
   .comment-avatar { width:38px; height:38px; border-radius:50%; background:var(--red); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:18px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
   .comment-body { flex:1; }
+
   .comment-author { font-weight:800; font-size:14px; color:#111; }
+
   .comment-date { font-size:11px; color:#aaa; margin-left:8px; }
+
   .comment-text { font-size:15px; color:#333; line-height:1.6; margin-top:5px; }
+
   .comment-likes { font-size:12px; color:#aaa; margin-top:6px; cursor:pointer; display:inline-flex; align-items:center; gap:4px; transition:color .15s; font-weight:700; }
+
   .comment-likes:hover { color:var(--red); }
+
   .no-comments { color:#aaa; font-size:15px; padding:20px 0; font-style:italic; }
 
+
+
   /* ── INLINE IMAGE IN EDITOR ── */
+
   .editor-img-wrap { position:relative; display:inline-block; margin:12px 0; }
+
   .editor-img-wrap img { max-width:100%; border-radius:4px; display:block; }
+
   .editor-img-wrap img.img-left { float:left; width:48%; margin:0 16px 12px 0; }
+
   .editor-img-wrap img.img-right { float:right; width:48%; margin:0 0 12px 16px; }
+
   .editor-img-wrap img.img-full { width:100%; float:none; margin:12px 0; }
+
   .img-controls { position:absolute; top:6px; left:6px; display:flex; gap:4px; background:rgba(0,0,0,.6); border-radius:4px; padding:3px 5px; opacity:0; transition:opacity .2s; }
+
   .editor-img-wrap:hover .img-controls { opacity:1; }
+
   .img-controls button { background:none; border:none; color:#fff; font-size:11px; font-weight:800; cursor:pointer; padding:2px 5px; border-radius:3px; font-family:'Barlow',sans-serif; transition:background .1s; }
+
   .img-controls button:hover { background:var(--red); }
+
   .img-controls button.active { background:var(--red); }
+
   .wavy-headline {
+
     font-family: 'Bebas Neue', sans-serif;
+
     font-size: clamp(32px, 5vw, 54px);
+
     line-height: 1.05;
+
     background: linear-gradient(90deg, #ff6b00, #ff9500, #ffb700, #ff6b00);
+
     background-size: 200% auto;
+
     -webkit-background-clip: text;
+
     -webkit-text-fill-color: transparent;
+
     background-clip: text;
+
     animation: waveShift 3s linear infinite;
+
     filter: drop-shadow(0 2px 8px rgba(255,107,0,0.18));
+
     margin: 8px 0 18px;
+
     display: block;
+
   }
+
   @keyframes waveShift {
+
     0% { background-position: 0% center; }
+
     100% { background-position: 200% center; }
+
   }
+
+
 
   /* ── UPLOADED ARTICLE CARD ── */
+
   .uploaded-article-card .card-img { height:200px; object-fit:cover; width:100%; display:block; }
+
   .pdf-news-card { border-radius: var(--card-radius); overflow: hidden; }
+
   .pdf-news-banner { height: 200px; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 16px; overflow: hidden; }
+
   .pdf-news-banner::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+
   .pdf-news-banner-inner { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
+
   .pdf-news-initials { width: 52px; height: 52px; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.25); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #fff; letter-spacing: 1px; }
+
   .pdf-news-label { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+
   .pdf-news-title-overlay { position: relative; z-index: 1; font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #fff; line-height: 1.1; letter-spacing: .5px; text-shadow: 0 2px 8px rgba(0,0,0,.4); max-width: 100%; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
+
+
   .pdf-badge { display:inline-block; background:#fff0f0; color:var(--red); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; padding:2px 8px; border-radius:3px; border:1px solid #ffd0d0; margin-bottom:4px; }
+
   .pdf-viewer-wrap { max-width:900px; margin:0 auto; padding:24px; }
+
   .pdf-viewer-wrap iframe { width:100%; height:80vh; border:none; border-radius:4px; box-shadow:0 4px 20px rgba(0,0,0,.1); }
+
   .upload-success { background:#e8f8f0; border:1px solid #a8e6c8; color:#1a6e40; padding:12px 16px; border-radius:4px; font-weight:600; font-size:14px; margin-bottom:8px; display:none; }
+
   .delete-pdf-btn { background:none; border:none; color:#ccc; font-size:18px; cursor:pointer; float:right; margin-top:-2px; transition:color .15s; }
+
   .delete-pdf-btn:hover { color:var(--red); }
 
+
+
   /* ── FOOTER SOCIALS ── */
+
   .footer-socials { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:18px; }
+
   .social-link { display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); color:#ddd; text-decoration:none; padding:7px 16px; border-radius:20px; font-size:13px; font-weight:600; transition:background .15s, color .15s; }
+
   .social-link:hover { background:var(--red); color:#fff; border-color:var(--red); }
+
   .social-link .social-icon { font-size:16px; line-height:1; }
+
   .footer-manage-btn { background:none; border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.45); font-size:12px; font-family:'Barlow',sans-serif; font-weight:600; padding:6px 14px; border-radius:20px; cursor:pointer; margin-top:12px; transition:border-color .15s,color .15s; }
+
   .footer-manage-btn:hover { border-color:var(--red); color:var(--red); }
 
+
+
   /* ── ADMIN DELETE ARTICLE BTN ── */
+
   .admin-delete-article { position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.55); border:none; color:#fff; font-size:14px; padding:4px 9px; border-radius:4px; cursor:pointer; opacity:0; transition:opacity .2s; z-index:5; }
+
   .card:hover .admin-delete-article { opacity:1; }
+
   .card { position:relative; }
 
+
+
   /* ── SOCIAL LIST IN MODAL ── */
+
   .social-manage-row { display:flex; align-items:center; gap:10px; background:#fafafa; border:1px solid #e2e2e2; border-radius:6px; padding:10px 14px; }
+
   .social-manage-row .sm-icon { font-size:20px; flex-shrink:0; }
+
   .social-manage-row .sm-info { flex:1; min-width:0; }
+
   .social-manage-row .sm-name { font-weight:700; font-size:14px; color:#111; }
+
   .social-manage-row .sm-url { font-size:12px; color:#888; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px; }
+
   .social-manage-row .sm-del { background:none; border:none; color:#ccc; font-size:18px; cursor:pointer; flex-shrink:0; transition:color .15s; }
+
   .social-manage-row .sm-del:hover { color:var(--red); }
 
+
+
   /* ── HAMBURGER ── */
+
   .hamburger { display:none; flex-direction:column; justify-content:center; gap:5px; background:none; border:none; cursor:pointer; padding:8px; border-radius:6px; transition:background .15s; flex-shrink:0; }
+
   .hamburger:hover { background:rgba(255,255,255,0.15); }
+
   .hamburger span { display:block; width:22px; height:2px; background:#fff; border-radius:2px; transition:transform .25s, opacity .25s; }
+
   .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+
   .hamburger.open span:nth-child(2) { opacity:0; }
+
   .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
 
+
+
   /* ── MOBILE DRAWER ── */
+
   .mobile-nav-overlay { display:none; position:fixed; inset:0; z-index:400; }
+
   .mobile-nav-overlay.open { display:block; }
+
   .mobile-nav-backdrop { position:absolute; inset:0; background:rgba(0,0,0,0.45); }
+
   .mobile-nav-drawer { position:absolute; top:0; left:0; width:280px; max-width:85vw; height:100%; background:#fff; display:flex; flex-direction:column; box-shadow:4px 0 24px rgba(0,0,0,0.18); transform:translateX(-100%); transition:transform .28s cubic-bezier(.4,0,.2,1); }
+
   .mobile-nav-overlay.open .mobile-nav-drawer { transform:translateX(0); }
+
   .mobile-nav-header { background:var(--red); padding:20px 20px 16px; display:flex; align-items:center; justify-content:space-between; }
+
   .mobile-nav-logo { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:2px; color:#fff; }
+
   .mobile-nav-close { background:none; border:none; color:rgba(255,255,255,0.8); font-size:22px; cursor:pointer; line-height:1; padding:4px; }
+
   .mobile-nav-links { flex:1; overflow-y:auto; padding:12px 0; }
+
   .mobile-nav-links button { display:flex; align-items:center; gap:12px; width:100%; background:none; border:none; padding:14px 20px; font-family:'Barlow',sans-serif; font-weight:700; font-size:15px; text-align:left; cursor:pointer; color:#333; border-left:3px solid transparent; transition:background .12s, color .12s, border-color .12s; }
+
   .mobile-nav-links button:hover, .mobile-nav-links button.active { background:#fff5f5; color:var(--red); border-left-color:var(--red); }
+
   .mobile-nav-search { padding:14px 20px; border-top:1px solid var(--border); }
+
   .mobile-nav-search input { width:100%; padding:10px 14px; border:2px solid var(--border); border-radius:20px; font-family:'Barlow',sans-serif; font-size:14px; outline:none; transition:border-color .15s; }
+
   .mobile-nav-search input:focus { border-color:var(--red); }
 
+
+
   /* ── BOTTOM TAB BAR ── */
+
   .mobile-tab-bar { display:none; position:fixed; bottom:0; left:0; right:0; z-index:200; background:#fff; border-top:1px solid var(--border); padding-bottom:env(safe-area-inset-bottom,0px); box-shadow:0 -2px 16px rgba(0,0,0,0.08); }
+
   .mobile-tab-bar nav { display:flex; }
+
   .mobile-tab-bar button { flex:1; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:9px 4px 8px; background:none; border:none; cursor:pointer; font-family:'Barlow',sans-serif; font-size:10px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:.3px; transition:color .15s; }
+
   .mobile-tab-bar .tab-icon { font-size:20px; line-height:1; }
+
   .mobile-tab-bar button.active { color:var(--red); }
+
   .mobile-tab-bar .tab-underline { display:none; position:absolute; top:0; left:50%; transform:translateX(-50%); width:20px; height:2px; background:var(--red); border-radius:2px; }
+
   .mobile-tab-bar button.active .tab-underline { display:block; }
 
+
+
   /* ── TABLET 900px ── */
+
   @media (max-width: 900px) {
+
     .card-grid { grid-template-columns: repeat(2, 1fr); }
+
     .card-grid.three-col { grid-template-columns: repeat(2, 1fr); }
+
     .hero { grid-template-columns: 1fr; max-height: none; }
+
     .hero-side { display: none; }
+
     .nav-links { display: none; }
+
     .hamburger { display: flex; }
+
     .search-wrap { display: none; }
+
     .topbar { padding: 0 16px; }
+
     .section-header { padding: 20px 16px 12px; }
+
     .card-grid { padding: 0 16px 24px; }
+
     .trending-list { padding: 0 16px 24px; }
+
   }
+
+
 
   /* ── MOBILE 600px ── */
+
   @media (max-width: 600px) {
+
     body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+
     .ticker-bar { font-size:11px; }
+
     .ticker-label { padding: 0 10px; font-size:10px; }
+
     .topbar { height: 50px; padding: 0 12px; }
+
     .logo { font-size: 26px; letter-spacing: 2px; }
+
     .logo-tagline { display: none; }
+
     .catbar { display: none; }
+
     .card-grid, .card-grid.three-col, .card-grid.two-col { grid-template-columns: 1fr; padding: 0 12px 20px; gap: 14px; }
+
     .card img { height: 180px; }
+
     .card h3 { font-size: 15px; }
+
     .section-header { padding: 18px 12px 10px; }
+
     .section-header h2 { font-size: 22px; }
+
     .hero-main img { height: 260px; }
+
     .hero-main h1 { font-size: 26px; }
+
     .hero-main .hero-overlay { padding: 24px 14px 14px; }
+
     .trending-list { padding: 0 12px 80px; }
+
     .trend-num { font-size: 36px; width: 36px; }
+
     .trend-img { width: 80px; height: 70px; }
+
     .trend-title { font-size: 15px; }
+
     .trend-item { gap: 10px; padding: 14px 0; }
+
     .article-page { padding: 16px 12px 80px; }
+
     .article-page h1 { font-size: 34px; }
+
     .article-body { font-size: 16px; }
+
     .article-body img.img-left, .article-body img.img-right { float: none; width: 100%; margin: 14px 0; }
+
     .banner-title { font-size: clamp(26px, 7vw, 48px); }
+
     .article-wave-banner .banner-content { padding: 28px 14px 60px; }
+
     .about-page { padding: 20px 12px 80px; }
+
     .about-page h1 { font-size: 40px; }
+
     .about-page .tagline { font-size: 17px; }
+
     .comments-section { padding: 0 12px 80px; }
+
     .modal { border-radius: 12px 12px 0 0; position: fixed; bottom: 0 !important; left: 0 !important; right: 0 !important; top: auto !important; max-height: 92vh; width: 100% !important; max-width: 100% !important; }
+
     .modal-backdrop { align-items: flex-end !important; }
+
     .search-results-page { padding: 20px 12px 80px; }
+
     .footer { padding: 28px 16px 100px; }
+
     .mobile-tab-bar { display: block; }
+
     .pdf-viewer-wrap { padding: 12px; }
+
     .pdf-viewer-wrap iframe { height: 65vh; }
+
   }
+
+
+
+  /* ══════════════════════════════════════
+
+     QUIZ STYLES
+
+     ══════════════════════════════════════ */
+
+  .quiz-page { max-width:860px; margin:0 auto; padding:32px 24px 80px; }
+
+  .quiz-page h1 { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:2px; color:var(--red); margin-bottom:4px; }
+
+  .quiz-page .quiz-sub { color:#888; font-size:15px; margin-bottom:28px; font-weight:600; }
+
+  .quiz-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:18px; }
+
+  .quiz-card { background:#fff; border:2px solid var(--border); border-radius:10px; padding:0; cursor:pointer; transition:border-color .15s, box-shadow .15s; overflow:hidden; position:relative; }
+
+  .quiz-card:hover { border-color:var(--red); box-shadow:0 4px 20px rgba(232,0,28,.12); }
+
+  .quiz-card-banner { height:110px; display:flex; align-items:center; justify-content:center; font-size:52px; }
+
+  .quiz-card-body { padding:14px 16px 16px; }
+
+  .quiz-card-title { font-family:'Barlow',sans-serif; font-weight:800; font-size:16px; color:#111; margin-bottom:4px; }
+
+  .quiz-card-meta { font-size:12px; color:#888; font-weight:600; }
+
+  .quiz-card-tag { display:inline-block; background:var(--red); color:#fff; font-size:10px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; padding:2px 8px; border-radius:20px; margin-bottom:8px; }
+
+  .quiz-card .admin-quiz-actions { position:absolute; top:8px; right:8px; display:flex; gap:6px; }
+
+  .quiz-card .admin-quiz-btn { background:rgba(255,255,255,0.92); border:none; border-radius:6px; cursor:pointer; font-size:14px; padding:4px 8px; box-shadow:0 1px 4px rgba(0,0,0,.1); transition:background .12s; }
+
+  .quiz-card .admin-quiz-btn:hover { background:#fff; }
+
+
+
+  /* QUIZ PLAY */
+
+  .quiz-play { max-width:700px; margin:0 auto; padding:32px 24px 80px; }
+
+  .quiz-play-header { display:flex; align-items:center; gap:14px; margin-bottom:28px; }
+
+  .quiz-play-back { background:none; border:2px solid var(--border); border-radius:8px; padding:8px 14px; font-family:'Barlow',sans-serif; font-weight:700; font-size:13px; cursor:pointer; color:#555; transition:border-color .15s,color .15s; }
+
+  .quiz-play-back:hover { border-color:var(--red); color:var(--red); }
+
+  .quiz-play-title { font-family:'Bebas Neue',sans-serif; font-size:36px; letter-spacing:1px; color:#111; }
+
+  .quiz-progress-bar { height:6px; background:var(--border); border-radius:3px; margin-bottom:28px; overflow:hidden; }
+
+  .quiz-progress-fill { height:100%; background:var(--red); border-radius:3px; transition:width .35s ease; }
+
+  .quiz-q-num { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--red); margin-bottom:8px; }
+
+  .quiz-question { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:#111; margin-bottom:24px; line-height:1.35; }
+
+  .quiz-options { display:grid; gap:12px; }
+
+  .quiz-option { background:#f8f8f8; border:2px solid var(--border); border-radius:10px; padding:14px 18px; font-family:'Barlow',sans-serif; font-weight:700; font-size:15px; cursor:pointer; text-align:left; transition:border-color .15s, background .15s, color .15s; display:flex; align-items:center; gap:12px; }
+
+  .quiz-option:hover:not(:disabled) { border-color:var(--red); background:#fff5f5; color:var(--red); }
+
+  .quiz-option.correct { border-color:#22c55e; background:#f0fdf4; color:#166534; }
+
+  .quiz-option.wrong { border-color:#ef4444; background:#fef2f2; color:#991b1b; }
+
+  .quiz-option:disabled { cursor:default; }
+
+  .quiz-option-letter { width:28px; height:28px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex-shrink:0; }
+
+  .quiz-option.correct .quiz-option-letter { background:#22c55e; color:#fff; }
+
+  .quiz-option.wrong .quiz-option-letter { background:#ef4444; color:#fff; }
+
+  .quiz-feedback { margin-top:16px; padding:14px 18px; border-radius:10px; font-weight:700; font-size:15px; }
+
+  .quiz-feedback.correct { background:#f0fdf4; color:#166534; border:2px solid #22c55e; }
+
+  .quiz-feedback.wrong { background:#fef2f2; color:#991b1b; border:2px solid #ef4444; }
+
+  .quiz-next-btn { margin-top:20px; background:var(--red); color:#fff; border:none; border-radius:8px; padding:12px 28px; font-family:'Barlow',sans-serif; font-weight:800; font-size:15px; cursor:pointer; transition:opacity .15s; }
+
+  .quiz-next-btn:hover { opacity:.88; }
+
+
+
+  /* QUIZ RESULTS */
+
+  .quiz-result { text-align:center; padding:48px 24px 80px; max-width:560px; margin:0 auto; }
+
+  .quiz-result-emoji { font-size:72px; margin-bottom:16px; }
+
+  .quiz-result-title { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:2px; color:var(--red); margin-bottom:8px; }
+
+  .quiz-result-score { font-size:20px; font-weight:700; color:#444; margin-bottom:24px; }
+
+  .quiz-result-bar { height:16px; background:var(--border); border-radius:8px; overflow:hidden; margin-bottom:8px; }
+
+  .quiz-result-fill { height:100%; background:var(--red); border-radius:8px; transition:width 1s ease; }
+
+  .quiz-result-pct { font-size:13px; color:#888; font-weight:600; margin-bottom:32px; }
+
+  .quiz-result-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+
+  .quiz-result-btn { padding:12px 24px; border-radius:8px; font-family:'Barlow',sans-serif; font-weight:800; font-size:14px; cursor:pointer; transition:opacity .15s; }
+
+  .quiz-result-btn.primary { background:var(--red); color:#fff; border:none; }
+
+  .quiz-result-btn.secondary { background:none; border:2px solid var(--border); color:#555; }
+
+  .quiz-result-btn:hover { opacity:.8; }
+
+
+
+  /* QUIZ STATS (admin) */
+
+  .stats-page { max-width:900px; margin:0 auto; padding:32px 24px 80px; }
+
+  .stats-page h1 { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:2px; color:var(--red); margin-bottom:4px; }
+
+  .stats-sub { color:#888; font-size:15px; font-weight:600; margin-bottom:28px; }
+
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; margin-bottom:36px; }
+
+  .stat-card { background:#fff; border:2px solid var(--border); border-radius:10px; padding:20px; text-align:center; }
+
+  .stat-card .stat-num { font-family:'Bebas Neue',sans-serif; font-size:48px; color:var(--red); line-height:1; }
+
+  .stat-card .stat-label { font-size:13px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:.5px; margin-top:4px; }
+
+  .stats-table { width:100%; border-collapse:collapse; font-size:14px; }
+
+  .stats-table th { text-align:left; padding:10px 14px; background:#f4f4f4; font-weight:800; font-size:12px; text-transform:uppercase; letter-spacing:.5px; color:#555; border-bottom:2px solid var(--border); }
+
+  .stats-table td { padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+
+  .stats-table tr:last-child td { border-bottom:none; }
+
+  .stats-section-title { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1px; color:#111; margin:28px 0 14px; }
+
+
+
+  /* QUIZ EDITOR MODAL */
+
+  #quizEditorModal .modal { max-width:700px; max-height:90vh; overflow-y:auto; }
+
+  .quiz-editor-q { background:#f8f8f8; border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:12px; position:relative; }
+
+  .quiz-editor-q-num { font-size:11px; font-weight:800; text-transform:uppercase; color:var(--red); margin-bottom:8px; letter-spacing:.5px; }
+
+  .quiz-editor-q input { width:100%; border:1.5px solid var(--border); border-radius:6px; padding:8px 10px; font-family:'Barlow',sans-serif; font-size:14px; margin-bottom:8px; outline:none; }
+
+  .quiz-editor-q input:focus { border-color:var(--red); }
+
+  .quiz-editor-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+
+  .quiz-editor-opt { display:flex; align-items:center; gap:6px; }
+
+  .quiz-editor-opt input[type=text] { flex:1; }
+
+  .quiz-editor-opt input[type=radio] { accent-color:var(--red); flex-shrink:0; }
+
+  .quiz-editor-opt label { font-size:12px; font-weight:700; color:#888; flex-shrink:0; }
+
+  .quiz-editor-del-q { position:absolute; top:10px; right:10px; background:none; border:none; cursor:pointer; font-size:16px; color:#ccc; transition:color .12s; }
+
+  .quiz-editor-del-q:hover { color:var(--red); }
+
+  .quiz-add-q-btn { background:none; border:2px dashed var(--border); width:100%; padding:12px; border-radius:8px; font-family:'Barlow',sans-serif; font-weight:700; color:#888; cursor:pointer; transition:border-color .15s,color .15s; margin-bottom:14px; }
+
+  .quiz-add-q-btn:hover { border-color:var(--red); color:var(--red); }
+
+
+
+  /* PERSONALITY QUIZ */
+
+  .personality-option { background:#f8f8f8; border:2px solid var(--border); border-radius:10px; padding:16px 20px; font-family:'Barlow',sans-serif; font-weight:700; font-size:15px; cursor:pointer; text-align:left; transition:border-color .2s, background .2s, transform .1s; display:block; width:100%; margin-bottom:10px; }
+
+  .personality-option:hover { border-color:var(--red); background:#fff5f5; color:var(--red); transform:translateX(4px); }
+
+  .personality-option.selected { border-color:var(--red); background:var(--red); color:#fff; }
+
+  .personality-option.selected:hover { transform:none; }
+
+  .quiz-type-badge { display:inline-block; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; padding:2px 8px; border-radius:20px; margin-left:6px; vertical-align:middle; }
+
+  .quiz-type-badge.knowledge { background:#1a1a2e; color:#fff; }
+
+  .quiz-type-badge.personality { background:#7c3aed; color:#fff; }
+
+  .personality-result { text-align:center; padding:48px 24px 80px; max-width:600px; margin:0 auto; }
+
+  .personality-result-banner { width:100%; height:160px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:80px; margin-bottom:24px; }
+
+  .personality-result-label { font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#888; margin-bottom:8px; }
+
+  .personality-result-title { font-family:'Bebas Neue',sans-serif; font-size:56px; letter-spacing:2px; line-height:1; margin-bottom:16px; color:#111; }
+
+  .personality-result-desc { font-size:17px; color:#444; line-height:1.6; max-width:480px; margin:0 auto 32px; font-family:'Playfair Display',serif; font-style:italic; }
+
+  .personality-result-traits { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:32px; }
+
+  .personality-trait { background:#f4f4f4; border-radius:20px; padding:6px 16px; font-size:13px; font-weight:700; color:#555; }
+
+
+
+  @media (max-width:600px) {
+
+    .quiz-grid { grid-template-columns:1fr; }
+
+    .quiz-question { font-size:20px; }
+
+    .quiz-editor-options { grid-template-columns:1fr; }
+
+    .stats-grid { grid-template-columns:repeat(2,1fr); }
+
+  }
+
+
+
 </style>
+
 </head>
+
 <body>
 
-<!-- ═══════════════════════════════════════
-     ARTICLE DATA — EDIT THIS SECTION ONLY
-     ═══════════════════════════════════════
 
-  HOW TO ADD AN ARTICLE:
-  Copy one of the objects below, paste it into the ARTICLES array,
-  and fill in your own values. All fields explained:
-
-  id        – unique number, increment by 1 each time
-  title     – your article headline
-  category  – MUST match one of: "unwomen", "legal", "disec", "updates"
-               (also used for section filtering)
-  tag       – display label shown on cards (can be anything, e.g. "Pop Culture")
-  author    – author name shown in byline
-  date      – display date string, e.g. "June 12, 2025"
-  image     – URL to a cover image (use any public image URL or relative path)
-  excerpt   – short teaser shown on cards (1–2 sentences)
-  trending  – set to true to show on the Trending page
-  featured  – set to true to show in the hero section (first featured = hero main)
-  body      – the full article HTML. Use these building blocks:
-
-    Paragraph:       <p>Your text here.</p>
-    Subheading:      <h2>Section title</h2>
-    Small heading:   <h3>Sub-section</h3>
-    Quote block:     <blockquote>Some great quote.</blockquote>
-    Bullet list:     <ul><li>Item 1</li><li>Item 2</li></ul>
-    Numbered list:   <ol><li>First</li><li>Second</li></ol>
-    Image (full):    <img src="URL" alt="description">
-    Image (left):    <img src="URL" alt="description" class="img-left">
-    Image (right):   <img src="URL" alt="description" class="img-right">
-    Bold text:       <strong>important word</strong>
-    Italic:          <em>emphasis</em>
-    BuzzFeed-style numbered item:
-                     <div class="number-item">
-                       <div class="num">1</div>
-                       <div class="num-body"><h4>Item title</h4><p>Description</p></div>
-                     </div>
-
-═══════════════════════════════════════ -->
 
 <script>
+
 const ARTICLES = [
+
   {
+
     id: 1,
+
     title: "17 Signs You Were Absolutely Obsessed With The Early 2000s Internet",
+
     category: "unwomen",
+
     tag: "Nostalgia",
+
     author: "The BuzzFeed Team",
+
     date: "May 24, 2025",
+
     image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&q=80",
+
     excerpt: "Dial-up tones, AIM away messages, and MySpace layouts — a whole generation shaped by the wild west of the web.",
+
     trending: true,
+
     featured: true,
+
     body: `
+
       <p>There was a very specific era of the internet that will never, ever come back — and if you lived through it, you know exactly what we're talking about. The era of glittery cursors, elaborate profile layouts, and the very serious business of picking your Top 8.</p>
+
       <h2>1. You Memorized Your Best Friend's AIM Screen Name</h2>
+
       <div class="number-item"><div class="num">1</div><div class="num-body"><h4>AIM Was Life</h4><p>You had a carefully curated away message with lyrics from your favorite emo band, and you checked obsessively to see who was online.</p></div></div>
+
       <div class="number-item"><div class="num">2</div><div class="num-body"><h4>Your MySpace Was A Work Of Art</h4><p>You spent <em>hours</em> tweaking your profile layout with custom HTML you copy-pasted from a site called "MySpace Layouts 4 U."</p></div></div>
+
       <div class="number-item"><div class="num">3</div><div class="num-body"><h4>LimeWire Was Your Music Store</h4><p>You downloaded songs one at a time and waited 45 minutes for a file that was almost certainly a virus. Worth it.</p></div></div>
+
       <blockquote>"You've got mail!" — the most exciting sound of an entire generation.</blockquote>
-      <p>The early internet was chaotic, glitchy, and absolutely unforgettable. Those of us who survived the dial-up era carry a very particular set of memories that simply cannot be replicated.</p>
+
+      <p>The early internet was chaotic, glitchy, and absolutely unforgettable.</p>
+
       <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80" alt="Old computers nostalgia">
+
       <p>Whether it was the satisfying screech of a modem connecting or the rush of getting a new comment on your Xanga post, the early 2000s internet shaped an entire generation's relationship with technology — and with each other.</p>
+
     `
+
   },
+
   {
+
     id: 2,
+
     title: "The 10 Travel Destinations That Are Defining Summer 2025",
+
     category: "legal",
+
     tag: "Travel",
+
     author: "Maria Gonzalez",
+
     date: "May 20, 2025",
+
     image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=80",
+
     excerpt: "From hidden coastal villages to buzzing urban rooftops, here's where everyone is going this summer.",
+
     trending: true,
+
     featured: true,
+
     body: `
-      <p>Summer 2025 is shaping up to be one of the most exciting travel years in recent memory. Travelers are ditching the overcrowded classics for <strong>genuinely surprising</strong> destinations — here's what's hot.</p>
+
+      <p>Summer 2025 is shaping up to be one of the most exciting travel years in recent memory.</p>
+
       <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80" alt="Beach destination" class="img-right">
+
       <h2>Southeast Asia Is Back, But Different</h2>
+
       <p>Everyone knows Thailand and Bali, but the savvy 2025 traveler is heading to the Mekong Delta towns of Vietnam, the volcanic islands of Indonesia outside of Bali, and the extraordinary street food scene of Penang, Malaysia.</p>
+
       <h2>Portugal's Silver Coast</h2>
-      <p>Lisbon and Porto have been discovered. The Silver Coast — stretching between them — is where the locals have always gone, and it's finally getting international attention. Think dramatic cliffs, surf-ready waves, and fish grilled over open flame.</p>
+
+      <p>Lisbon and Porto have been discovered. The Silver Coast is where the locals have always gone, and it's finally getting international attention.</p>
+
       <blockquote>The best travel is when you feel slightly lost, but completely alive.</blockquote>
-      <p>Whether you're planning a two-week adventure or a quick weekend escape, 2025's travel scene rewards the curious, the flexible, and the hungry — for food, culture, and genuine connection.</p>
+
     `
+
   },
+
   {
+
     id: 3,
+
     title: "Scientists Just Discovered Why You Can't Stop Scrolling — And It's Fascinating",
+
     category: "disec",
+
     tag: "Science",
+
     author: "Dr. James Park",
+
     date: "May 18, 2025",
+
     image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=900&q=80",
+
     excerpt: "A new study reveals the neurological loop that makes infinite scroll feel impossible to stop — even when you want to.",
+
     trending: true,
+
     featured: true,
+
     body: `
-      <p>You pick up your phone to check one notification. Forty-five minutes later, you're watching a video about competitive dog grooming and you have no idea how you got there. A new study from MIT's Media Lab thinks it finally has the answer.</p>
+
+      <p>You pick up your phone to check one notification. Forty-five minutes later, you're watching a video about competitive dog grooming and you have no idea how you got there.</p>
+
       <h2>The Dopamine Anticipation Loop</h2>
-      <p>It's not the content that's addictive — it's the <em>anticipation</em> of content. Every swipe upward triggers a tiny burst of dopamine not when you see something interesting, but in the <strong>moment before</strong> the next piece of content appears.</p>
+
+      <p>It's not the content that's addictive — it's the <em>anticipation</em> of content.</p>
+
       <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80" alt="Phone scrolling">
-      <p>This is the same neurological mechanism used by slot machines. The variable reward — sometimes the next thing is amazing, sometimes it's boring — is precisely what makes the loop so hard to break.</p>
-      <blockquote>"The scroll is not the product. The anticipation is the product." — Dr. Sarah Chen, MIT Media Lab</blockquote>
+
+      <blockquote>"The scroll is not the product. The anticipation is the product."</blockquote>
+
       <h2>What You Can Actually Do</h2>
+
       <ul>
+
         <li>Set app timers that create a genuine friction point before you can override them</li>
-        <li>Replace the first scroll of the morning with a physical action (making coffee, stretching)</li>
-        <li>Turn your phone screen to grayscale — it dramatically reduces visual reward signals</li>
+
+        <li>Replace the first scroll of the morning with a physical action</li>
+
+        <li>Turn your phone screen to grayscale</li>
+
       </ul>
-      <p>The research is fascinating not because it tells us something new, but because it finally explains something we all intuitively feel every single day.</p>
+
     `
+
   },
+
   {
+
     id: 4,
+
     title: "The Best TV Shows Premiering This Month, Ranked",
+
     category: "unwomen",
+
     tag: "TV & Film",
+
     author: "Priya Nair",
+
     date: "May 15, 2025",
+
     image: "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=900&q=80",
+
     excerpt: "From prestige drama to unhinged reality TV, your couch is about to get a serious workout.",
+
     trending: false,
+
     featured: false,
-    body: `
-      <p>May is stacked. Streaming services have been holding back their heavy hitters for exactly this moment, and the result is an almost overwhelming array of excellent new television.</p>
-      <h2>The Must-Watches</h2>
-      <p>We watched everything so you don't have to make the wrong choice on a Friday night. You can thank us later.</p>
-      <div class="number-item"><div class="num">1</div><div class="num-body"><h4>The Best of the Month</h4><p>A sweeping, gorgeous prestige drama that has already generated serious awards buzz. The performances are extraordinary.</p></div></div>
-      <div class="number-item"><div class="num">2</div><div class="num-body"><h4>The Guilty Pleasure</h4><p>Is it high art? Absolutely not. Is it completely impossible to stop watching? One hundred percent yes.</p></div></div>
-      <div class="number-item"><div class="num">3</div><div class="num-body"><h4>The Sleeper Hit</h4><p>Nobody is talking about this one yet, but they will be by the end of the month. Trust us.</p></div></div>
-    `
+
+    body: `<p>May is stacked. Streaming services have been holding back their heavy hitters for exactly this moment.</p>`
+
   },
+
   {
+
     id: 5,
+
     title: "Morning Routines Of The World's Most Productive People",
+
     category: "legal",
+
     tag: "Wellness",
+
     author: "Alex Thompson",
+
     date: "May 12, 2025",
+
     image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80",
+
     excerpt: "What do billionaires, Olympic athletes, and Nobel laureates all have in common? They're annoyingly good at mornings.",
+
     trending: false,
+
     featured: false,
-    body: `
-      <p>The morning routine is having its cultural moment — again. But this time, the research is actually catching up to the hype, and what we're learning is both surprising and genuinely useful.</p>
-      <h2>The One Thing Everyone Agrees On</h2>
-      <p>No phone for the first 30 minutes. Every single high-performer we looked at — from <strong>Tim Cook</strong> waking at 3:45am to <strong>Oprah</strong>'s morning gratitude practice — keeps the first moments of the day screen-free.</p>
-      <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80" alt="Morning coffee routine" class="img-left">
-      <p>The reasoning is simple: your brain enters the day in a highly suggestible state. The first inputs you give it set the emotional and cognitive tone for everything that follows. Choosing those inputs deliberately is the highest-leverage decision you can make.</p>
-      <blockquote>Win the morning, win the day. Lose the morning, spend the rest of it catching up.</blockquote>
-      <h2>The Three Pillars</h2>
-      <ol>
-        <li><strong>Movement</strong> — even 10 minutes dramatically increases focus and mood</li>
-        <li><strong>Intention</strong> — write down the one thing that matters most today</li>
-        <li><strong>Nutrition</strong> — what you put in your body in the first hour shapes your energy for hours</li>
-      </ol>
-    `
+
+    body: `<p>The morning routine is having its cultural moment — again.</p>`
+
   },
+
   {
+
     id: 6,
+
     title: "AI Just Beat A Human Chess Grandmaster At Their Own Strategy",
+
     category: "disec",
+
     tag: "Technology",
+
     author: "Sam Chen",
+
     date: "May 10, 2025",
+
     image: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=900&q=80",
+
     excerpt: "In a match that stunned the chess world, an AI system didn't just win — it won using the grandmaster's own signature opening.",
+
     trending: true,
+
     featured: false,
-    body: `
-      <p>In what commentators are calling the most psychologically striking AI victory since Deep Blue, a new chess AI defeated reigning world champion Erik Carlsen not with brute calculation, but with <em>imitation</em>.</p>
-      <h2>The Sicilian Gambit</h2>
-      <p>Carlsen is famous for his aggressive Sicilian opening — a complex, high-risk strategy that he has perfected over decades. The AI, after studying thousands of Carlsen's games, adopted the exact same opening — and then played it better.</p>
-      <blockquote>"It felt like playing against a version of myself that had no fear and infinite patience." — Erik Carlsen</blockquote>
-      <p>This represents a significant shift in how we understand machine intelligence. It's no longer simply about raw computation — it's about stylistic adaptation and psychological modeling.</p>
-      <img src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=800&q=80" alt="Chess board">
-      <p>The implications extend far beyond chess. If AI systems can now model and surpass human cognitive <em>styles</em>, not just human performance, the applications — and the questions — are profound.</p>
-    `
+
+    body: `<p>In what commentators are calling the most psychologically striking AI victory since Deep Blue, a new chess AI defeated a reigning champion not with brute calculation, but with <em>imitation</em>.</p>`
+
   }
+
 ];
 
-// ═══════════════════════════════════════
-// SITE CONFIG — edit your site name/about text here
-// ═══════════════════════════════════════
+
+
 const SITE = {
+
   name: "BuzzFeed",
+
   tagline: "News, Entertainment, Lifestyle — All In One Place",
+
   sections: [
+
     { id: "unwomen", label: "UNWOMEN" },
+
     { id: "legal",   label: "Legal" },
+
     { id: "disec",   label: "DISEC" },
+
     { id: "updates", label: "Updates" }
+
   ],
+
   about: {
+
     headline: "About BuzzFeed",
+
     tagline: "The internet's most addictive home for news, culture, and lists.",
+
     body: `
-      <p>BuzzFeed was born out of a simple idea: the internet moves fast, and keeping up with everything worth knowing shouldn't feel like a chore. We cover entertainment, breaking news, lifestyle trends, science, technology, and the weird, wonderful corners of culture that make the web worth visiting.</p>
+
+      <p>BuzzFeed was born out of a simple idea: the internet moves fast, and keeping up with everything worth knowing shouldn't feel like a chore.</p>
+
       <p>Our team of writers, editors, and deep-internet explorers scours the web so you don't have to — bringing you the stories, lists, and discoveries that are genuinely worth your time.</p>
-      <p>We believe great content can be smart <em>and</em> fun, serious <em>and</em> shareable, timely <em>and</em> timeless. Whether you're here for a three-minute distraction or a deep dive, BuzzFeed has something for you.</p>
+
+      <p>We believe great content can be smart <em>and</em> fun, serious <em>and</em> shareable, timely <em>and</em> timeless.</p>
+
     `
+
   }
+
 };
+
 </script>
+
+
 
 <!-- ═══════════════ MARKUP ═══════════════ -->
 
+
+
 <div class="topbar-wrapper">
+
   <nav class="topbar">
+
     <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" onclick="toggleMobileNav()">
+
       <span></span><span></span><span></span>
+
     </button>
+
     <div class="logo-wrap" onclick="showPage('home')">
+
       <div class="logo">BuzzFeed</div>
+
       <div class="logo-tagline">News · Culture · Entertainment</div>
+
     </div>
+
     <div class="nav-links" id="navLinks"></div>
+
     <div id="adminBadge" style="display:none;align-items:center;gap:8px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.35);border-radius:20px;padding:5px 14px 5px 10px;margin-right:8px;">
+
       <span style="font-size:12px;">🔓</span>
+
       <span style="font-size:12px;font-weight:800;color:#fff;letter-spacing:.5px;text-transform:uppercase;">Admin</span>
+
       <button onclick="setAdminMode(false)" title="Log out" style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:13px;cursor:pointer;padding:0 0 0 6px;font-family:'Barlow',sans-serif;font-weight:700;">✕ Exit</button>
+
     </div>
+
     <div class="search-wrap">
+
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+
       <input type="text" id="searchInput" placeholder="Search articles…" onkeydown="handleSearch(event)">
+
     </div>
+
   </nav>
+
 </div>
+
+
 
 <!-- MOBILE DRAWER -->
+
 <div class="mobile-nav-overlay" id="mobileNavOverlay">
+
   <div class="mobile-nav-backdrop" onclick="closeMobileNav()"></div>
+
   <div class="mobile-nav-drawer">
+
     <div class="mobile-nav-header">
+
       <span class="mobile-nav-logo">BuzzFeed</span>
+
       <button class="mobile-nav-close" onclick="closeMobileNav()">&#x2715;</button>
+
     </div>
+
     <div class="mobile-nav-links" id="mobileNavLinks"></div>
+
     <div class="mobile-nav-search">
+
       <input type="text" id="mobileSearchInput" placeholder="Search articles&#x2026;" onkeydown="handleMobileSearch(event)">
+
     </div>
+
   </div>
+
 </div>
 
+
+
 <!-- MOBILE BOTTOM TAB BAR -->
+
 <div class="mobile-tab-bar">
+
   <nav>
+
     <button onclick="mobileNav('home')" data-tab="home" class="active">
+
       <div class="tab-underline"></div>
+
       <span class="tab-icon">&#x1F3E0;</span>
+
       <span>Home</span>
+
     </button>
+
     <button onclick="mobileNav('trending')" data-tab="trending">
+
       <div class="tab-underline"></div>
+
       <span class="tab-icon">&#x1F525;</span>
+
       <span>Trending</span>
+
     </button>
+
     <button onclick="mobileNav('search-tab')" data-tab="search-tab">
+
       <div class="tab-underline"></div>
+
       <span class="tab-icon">&#x1F50D;</span>
+
       <span>Search</span>
+
     </button>
-    <button onclick="mobileNav('about')" data-tab="about">
+
+    <button onclick="mobileNav('quizzes')" data-tab="quizzes">
+
       <div class="tab-underline"></div>
-      <span class="tab-icon">&#x2139;&#xFE0F;</span>
-      <span>About</span>
+
+      <span class="tab-icon">&#x1F9E0;</span>
+
+      <span>Quizzes</span>
+
     </button>
+
   </nav>
+
 </div>
+
+
 
 <div class="catbar" id="catbar"></div>
 
 <main id="mainContent"></main>
 
+
+
 <!-- ARTICLE UPLOAD MODAL -->
+
 <div class="modal-backdrop" id="pdfModal">
+
   <div class="modal" style="max-width:560px;">
+
     <div class="modal-head">
+
       <h2>✍️ Upload Article</h2>
+
       <button onclick="closeModal()" title="Close">✕</button>
+
     </div>
+
     <div class="modal-body">
+
       <div class="upload-success" id="uploadSuccess">✅ Article uploaded successfully!</div>
+
       <div>
+
         <span class="field-label">Headline *</span>
+
         <input type="text" id="pdfTitle" placeholder="Write a punchy headline…">
+
       </div>
+
       <div>
+
         <span class="field-label">Author</span>
+
         <input type="text" id="pdfAuthor" placeholder="Your name">
+
       </div>
+
       <div>
+
         <span class="field-label">Section *</span>
+
         <select id="pdfCategory">
+
           <option value="unwomen">UNWOMEN</option>
+
           <option value="legal">Legal</option>
+
           <option value="disec">DISEC</option>
+
           <option value="updates">Updates</option>
+
         </select>
+
       </div>
+
       <div>
+
         <span class="field-label">Tag / Label</span>
+
         <input type="text" id="pdfTag" placeholder="e.g. Opinion, Report, News…">
+
       </div>
+
       <div>
+
         <span class="field-label">Cover Image *</span>
+
         <div class="drop-zone" id="dropZone" onclick="document.getElementById('pdfFileInput').click()">
+
           <div class="dz-icon" id="dzIcon">🖼️</div>
+
           <p id="dzText">Click to choose an image, or <strong>drag & drop</strong> it here</p>
+
           <input type="file" id="pdfFileInput" accept="image/*">
+
           <div class="pdf-chosen" id="pdfChosen"></div>
+
           <img id="imgPreview" style="display:none;max-height:140px;border-radius:6px;margin-top:8px;object-fit:cover;width:100%;">
+
         </div>
+
       </div>
+
       <div>
+
         <span class="field-label">Article Body *</span>
+
         <div class="article-toolbar" id="articleToolbar">
+
           <button type="button" onclick="fmt('bold')" title="Bold"><b>B</b></button>
+
           <button type="button" onclick="fmt('italic')" title="Italic"><i>I</i></button>
+
           <button type="button" onclick="fmt('underline')" title="Underline"><u>U</u></button>
+
           <button type="button" onclick="fmtBlock('h2')" title="Heading">H2</button>
+
           <button type="button" onclick="fmtBlock('p')" title="Paragraph">¶</button>
+
           <button type="button" onclick="fmt('insertUnorderedList')" title="Bullet list">• List</button>
+
           <button type="button" onclick="insertLink()" title="Link">🔗</button>
+
           <button type="button" onclick="insertInlineImage()" title="Insert image">🖼 Image</button>
+
         </div>
+
         <div id="articleBody" class="article-editor" contenteditable="true" placeholder="Write your article here…"></div>
+
       </div>
+
       <div>
+
         <span class="field-label">Short Description (shown on card)</span>
+
         <textarea id="pdfExcerpt" placeholder="A one or two sentence summary…"></textarea>
+
       </div>
+
       <div>
+
         <span class="field-label">Show on Trending page?</span>
+
         <select id="pdfTrending">
+
           <option value="no">No</option>
+
           <option value="yes">Yes</option>
+
         </select>
+
       </div>
+
     </div>
+
     <div class="modal-actions">
+
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+
       <button class="btn-primary" onclick="savePDF()">Publish Article →</button>
+
     </div>
+
   </div>
+
 </div>
+
+
 
 <footer>
+
   <div class="footer-logo" id="footerLogo"></div>
+
   <p id="footerTagline"></p>
+
   <div class="footer-socials" id="footerSocials"></div>
+
 </footer>
 
+
+
 <!-- SOCIAL MEDIA MODAL -->
+
 <div class="modal-backdrop" id="socialModal">
+
   <div class="modal">
+
     <div class="modal-head">
+
       <h2>🌐 Manage Social Media</h2>
+
       <button onclick="closeSocialModal()" title="Close">✕</button>
+
     </div>
+
     <div class="modal-body">
+
       <div id="socialList" style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px;"></div>
+
       <hr style="border:none;border-top:1px solid #e2e2e2;margin:8px 0;">
+
       <div style="font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:#444;margin-bottom:10px;">Add New</div>
+
       <div style="display:flex;flex-direction:column;gap:10px;">
+
         <div>
+
           <span class="field-label">Platform</span>
+
           <select id="socialPlatform">
+
             <option value="instagram">Instagram</option>
+
             <option value="twitter">Twitter / X</option>
+
             <option value="facebook">Facebook</option>
+
             <option value="tiktok">TikTok</option>
+
             <option value="youtube">YouTube</option>
+
             <option value="linkedin">LinkedIn</option>
+
             <option value="threads">Threads</option>
+
             <option value="other">Other</option>
+
           </select>
+
         </div>
+
         <div>
+
           <span class="field-label">Display Label</span>
+
           <input type="text" id="socialLabel" placeholder="e.g. @BuzzFeed">
+
         </div>
+
         <div>
+
           <span class="field-label">URL</span>
+
           <input type="text" id="socialUrl" placeholder="https://instagram.com/buzzfeed">
+
         </div>
+
       </div>
+
     </div>
+
     <div class="modal-actions">
+
       <button class="btn-cancel" onclick="closeSocialModal()">Close</button>
+
       <button class="btn-primary" onclick="addSocial()">Add →</button>
+
     </div>
+
   </div>
+
 </div>
+
+
+
+<!-- QUIZ EDITOR MODAL -->
+
+<div class="modal-backdrop" id="quizEditorModal">
+
+  <div class="modal" style="max-width:700px;">
+
+    <div class="modal-head" style="background:#111;">
+
+      <h2>🧠 Quiz Editor</h2>
+
+      <button onclick="closeQuizEditor()" title="Close">✕</button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+        <div>
+
+          <span class="field-label">Quiz Title</span>
+
+          <input type="text" id="qzTitle" placeholder="e.g. World Leaders 2025">
+
+        </div>
+
+        <div>
+
+          <span class="field-label">Category</span>
+
+          <select id="qzCategory">
+
+            <option value="World Leaders">World Leaders</option>
+
+            <option value="Countries">Countries</option>
+
+            <option value="Geography">Geography</option>
+
+            <option value="History">History</option>
+
+            <option value="Politics">Politics</option>
+
+            <option value="Custom">Custom</option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+
+        <div>
+
+          <span class="field-label">Emoji Icon</span>
+
+          <input type="text" id="qzEmoji" placeholder="🌍" maxlength="4" style="font-size:22px;">
+
+        </div>
+
+        <div>
+
+          <span class="field-label">Banner Color</span>
+
+          <input type="color" id="qzColor" value="#e8001c" style="height:42px;width:100%;border-radius:6px;border:1.5px solid #e2e2e2;cursor:pointer;">
+
+        </div>
+
+      </div>
+
+      <div style="font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:#444;margin-bottom:10px;">Questions</div>
+
+      <div id="quizEditorQuestions"></div>
+
+      <button class="quiz-add-q-btn" onclick="addEditorQuestion()">+ Add Question</button>
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button class="btn-cancel" onclick="closeQuizEditor()">Cancel</button>
+
+      <button class="btn-primary" onclick="saveQuizFromEditor()">Save Quiz →</button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
 
 <!-- ARTICLE DELETE CONFIRM MODAL -->
+
 <div class="modal-backdrop" id="deleteArticleModal">
+
   <div class="modal" style="max-width:420px;">
+
     <div class="modal-head" style="background:#333;">
+
       <h2>🗑 Delete Article</h2>
+
       <button onclick="closeDeleteModal()" title="Close">✕</button>
+
     </div>
+
     <div class="modal-body">
+
       <p style="font-size:16px;color:#333;">Are you sure you want to delete this article? This cannot be undone.</p>
+
       <p id="deleteArticleTitle" style="font-weight:800;font-size:15px;margin-top:10px;color:var(--red);"></p>
+
     </div>
+
     <div class="modal-actions">
+
       <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+
       <button class="btn-primary" style="background:#c0392b;" onclick="confirmDeleteArticle()">Delete</button>
+
     </div>
+
   </div>
+
 </div>
 
+
+
 <script>
+
 /* ══════════════════════════════════════
-   SUPABASE CONFIG — paste your credentials here
+
+   SUPABASE CONFIG
+
    ══════════════════════════════════════ */
+
 const SUPABASE_URL = 'https://alrrisnozhvyqctstkeo.supabase.co';
+
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFscnJpc25vemh2eXFjdHN0a2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3NTMxOTcsImV4cCI6MjA5NTMyOTE5N30.xo7YGBwcrmznr9n_6bltdWLtAUYsOyhXsBG837Xmv-s';
 
+
+
 async function sbFetch(path, options = {}) {
+
   const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+
     headers: {
+
       'apikey': SUPABASE_KEY,
+
       'Authorization': 'Bearer ' + SUPABASE_KEY,
+
       'Content-Type': 'application/json',
+
       'Prefer': options.prefer || 'return=representation'
+
     },
+
     method: options.method || 'GET',
+
     body: options.body ? JSON.stringify(options.body) : undefined
+
   });
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(err);
-  }
+
+  if (!res.ok) { const err = await res.text(); throw new Error(err); }
+
   const text = await res.text();
+
   return text ? JSON.parse(text) : [];
+
 }
 
-/* ══════════════════════════════════════
-   RENDERING ENGINE
-   ══════════════════════════════════════ */
+
 
 const PASSWORD = '06107qW!';
+
 let currentPage = 'home';
+
 let currentSection = null;
+
 let selectedPdfData = null;
+
 let selectedImageFile = null;
+
 let isAdminMode = false;
+
 let deletedArticleIds = [];
+
 let cachedPDFs = [];
+
 let cachedSocials = [];
 
+
+
 function setAdminMode(on) {
+
   isAdminMode = on;
+
   document.getElementById('adminBadge').style.display = on ? 'flex' : 'none';
+
   showPage(currentPage);
+
   renderFooterSocials();
+
 }
 
-function showLoading(main) {
-  main.innerHTML = `<div style="text-align:center;padding:80px 24px;color:#aaa;font-size:16px;font-weight:600;">Loading…</div>`;
-}
 
-/* ── INIT ── */
+
 async function init() {
+
   document.querySelector('.logo').textContent = SITE.name;
+
   document.getElementById('footerLogo').textContent = SITE.name;
+
   document.getElementById('footerTagline').textContent = SITE.tagline;
+
   buildNav();
+
   buildCatBar();
+
   setupDropZone();
 
-  // Load all data from Supabase upfront
   try {
+
     const [pdfs, socials, deleted] = await Promise.all([
+
       sbFetch('pdfs?order=created_at.desc'),
+
       sbFetch('socials?order=created_at.asc'),
+
       sbFetch('deleted_articles')
+
     ]);
+
     cachedPDFs = pdfs || [];
+
     cachedSocials = socials || [];
+
     deletedArticleIds = (deleted || []).map(r => r.article_id);
+
+    cachedPDFs.forEach(p => { if (typeof p.questions === 'string') try { p.questions = JSON.parse(p.questions); } catch(e){} });
+
   } catch(e) {
+
     console.error('Failed to load from Supabase:', e);
+
     cachedPDFs = []; cachedSocials = []; deletedArticleIds = [];
+
   }
 
   renderFooterSocials();
+
   buildTicker();
+
   showPage('home');
+
 }
 
-/* ── NAV ── */
+
+
 function buildNav() {
+
   const wrap = document.getElementById('navLinks');
+
   wrap.innerHTML = '';
+
   const pages = [
+
     { id: 'home', label: 'Home' },
+
     ...SITE.sections,
+
+    { id: 'quizzes', label: '🧠 Quizzes' },
+
     { id: 'trending', label: '🔥 Trending' },
+
     { id: 'about', label: 'About Us' }
+
   ];
+
   pages.forEach(p => {
+
     const btn = document.createElement('button');
+
     btn.textContent = p.label;
+
     btn.dataset.page = p.id;
+
     btn.onclick = () => { currentSection = SITE.sections.find(s=>s.id===p.id)||null; showPage(p.id); };
+
     wrap.appendChild(btn);
+
   });
+
 }
+
+
 
 function buildCatBar() {
+
   const bar = document.getElementById('catbar');
+
   bar.innerHTML = '';
+
   const cats = [{ id:'home', label:'All' }, ...SITE.sections];
+
   cats.forEach(c => {
+
     const btn = document.createElement('button');
+
     btn.textContent = c.label;
+
     btn.dataset.cat = c.id;
+
     btn.onclick = () => { currentSection = SITE.sections.find(s=>s.id===c.id)||null; showPage(c.id); };
+
     bar.appendChild(btn);
+
   });
+
 }
+
+
 
 function setActiveNav(pageId) {
+
   document.querySelectorAll('#navLinks button').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
+
   document.querySelectorAll('.catbar button').forEach(b => b.classList.toggle('active', b.dataset.cat === pageId));
+
   document.querySelectorAll('.mobile-tab-bar button').forEach(b => b.classList.toggle('active', b.dataset.tab === pageId));
+
   document.querySelectorAll('[data-mob-page]').forEach(b => b.classList.toggle('active', b.dataset.mobPage === pageId));
+
 }
 
-/* ── PAGE ROUTING ── */
+
+
 function showPage(pageId) {
+
   currentPage = pageId;
+
   setActiveNav(pageId);
+
   const main = document.getElementById('mainContent');
+
   if (pageId === 'home')     { renderHome(main);    return; }
+
   if (pageId === 'trending') { renderTrending(main); return; }
+
   if (pageId === 'about')    { renderAbout(main);    return; }
+
   if (pageId === 'pdfs')     { renderPDFs(main);     return; }
-  if (pageId === 'search')   { return; }
+
+  if (pageId === 'quizzes')  { renderQuizPage(main);  return; }
+
+  if (pageId === 'stats')    { if (isAdminMode) renderStatsPage(main); return; }
+
   const sec = SITE.sections.find(s => s.id === pageId);
+
   if (sec) { renderSection(main, sec); }
+
 }
 
-/* ── HOME ── */
+
+
 function renderHome(main) {
+
   const featured = getVisibleArticles().filter(a => a.featured);
+
   const hero = featured[0];
+
   const heroSide = featured.slice(1, 4);
+
   const trending4 = [...getVisibleArticles().filter(a=>a.trending), ...cachedPDFs.filter(p=>p.trending)].slice(0,4);
+
   let html = '';
 
   if (hero) {
+
     html += `<div class="hero">
+
       <div class="hero-main" onclick="openArticle(${hero.id})">
+
         <img src="${hero.image}" alt="${esc(hero.title)}">
+
         <div class="hero-overlay">
+
           <span class="hero-cat">${esc(hero.tag)}</span>
+
           <h1>${esc(hero.title)}</h1>
+
           <div class="hero-meta">By ${esc(hero.author)} · ${esc(hero.date)}</div>
+
         </div>
+
       </div>
+
       <div class="hero-side">`;
+
     heroSide.forEach(a => {
+
       html += `<div class="side-card" onclick="openArticle(${a.id})">
+
         <img src="${a.image}" alt="${esc(a.title)}">
+
         <div class="side-info">
+
           <div class="side-cat">${esc(a.tag)}</div>
+
           <h3>${esc(a.title)}</h3>
+
         </div>
+
       </div>`;
+
     });
+
     html += `</div></div>`;
+
   }
 
   SITE.sections.forEach(sec => {
+
     const arts = getVisibleArticles().filter(a=>a.category===sec.id).slice(0,4);
+
     const pdfs = cachedPDFs.filter(p=>p.category===sec.id).slice(0,2);
+
     const combined = [...arts, ...pdfs].slice(0,4);
+
     if (!combined.length) return;
+
     html += sectionHeader(sec.label, sec.id);
+
     html += `<div class="card-grid">`;
+
     combined.forEach(a => { html += (a.pdfData || a.pdf_data) ? pdfCard(a) : articleCard(a); });
+
     html += `</div>`;
+
   });
 
   if (trending4.length) {
+
     html += sectionHeader('🔥 Trending Now', 'trending');
+
     html += `<div class="card-grid">`;
+
     trending4.forEach(a => { html += (a.pdfData || a.pdf_data) ? pdfCard(a) : articleCard(a); });
+
     html += `</div>`;
+
   }
 
   main.innerHTML = html;
+
 }
 
-/* ── SECTION PAGE ── */
+
+
 function renderSection(main, sec) {
+
   const arts = getVisibleArticles().filter(a=>a.category===sec.id);
+
   const pdfs = cachedPDFs.filter(p=>p.category===sec.id);
+
   const combined = [...arts, ...pdfs];
+
   let html = sectionHeader(sec.label, null);
+
   if (!combined.length) {
+
     html += `<div class="no-results">No articles in this section yet.</div>`;
+
   } else {
+
     html += `<div class="card-grid three-col">`;
+
     combined.forEach(a => { html += (a.pdfData || a.pdf_data) ? pdfCard(a) : articleCard(a); });
+
     html += `</div>`;
+
   }
+
   main.innerHTML = html;
+
 }
 
-/* ── TRENDING ── */
+
+
 function renderTrending(main) {
+
   const arts = getVisibleArticles().filter(a=>a.trending);
+
   const pdfs = cachedPDFs.filter(p=>p.trending);
+
   const combined = [...arts, ...pdfs];
+
   let html = sectionHeader('🔥 Trending Now', null);
+
   html += `<div class="trending-list">`;
+
   combined.forEach((a,i) => {
+
     const isPdf = !!(a.pdfData || a.pdf_data);
+
     const clickFn = isPdf ? `openPDF('${a.id}')` : `openArticle('${a.id}')`;
+
     const thumb = isPdf
+
       ? `<div class="trend-img" style="background:#fff0f0;display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--red);border-radius:3px;">📄</div>`
+
       : `<img class="trend-img" src="${a.image}" alt="${esc(a.title)}">`;
+
     html += `<div class="trend-item" onclick="${clickFn}">
+
       <div class="trend-num">${i+1}</div>
+
       ${thumb}
+
       <div class="trend-body">
+
         <div class="trend-cat">${isPdf?'<span class="pdf-badge">PDF</span> ':''} ${esc(a.tag)}</div>
+
         <div class="trend-title">${esc(a.title)}</div>
+
         <div class="trend-meta">By ${esc(a.author)} · ${esc(a.date)}</div>
+
       </div>
+
     </div>`;
+
   });
+
   if (!combined.length) html += `<div class="no-results">Nothing trending yet.</div>`;
+
   html += `</div>`;
+
   main.innerHTML = html;
+
 }
 
-/* ── ABOUT ── */
+
+
 function renderAbout(main) {
+
   main.innerHTML = `<div class="about-page">
+
     <h1>${esc(SITE.about.headline)}</h1>
+
     <div class="tagline">${esc(SITE.about.tagline)}</div>
+
     ${SITE.about.body}
+
   </div>`;
+
 }
 
-/* ── PDF LIST PAGE ── */
+
+
 function renderPDFs(main) {
+
   const pdfs = cachedPDFs;
+
   let html = sectionHeader('✍️ Articles', null);
+
   if (!pdfs.length) {
-    html += `<div class="no-results">No articles uploaded yet.<br><small style="color:#aaa;font-size:14px;">Type the password in the search bar to upload one.</small></div>`;
+
+    html += `<div class="no-results">No articles uploaded yet.</div>`;
+
   } else {
+
     html += `<div class="card-grid three-col">`;
+
     pdfs.forEach(p => { html += pdfCard(p); });
+
     html += `</div>`;
+
   }
+
   main.innerHTML = html;
+
 }
 
-/* ── WAVE BANNER ── */
+
+
 function waveBanner(tag, title, author, date, backFn, delBtn) {
+
   return `<div class="article-wave-banner">
+
     <div class="banner-content">
+
       <div>
+
         <button class="banner-back-btn" onclick="${backFn}">← Back</button>
+
         ${delBtn ? `<button class="banner-delete-btn">${delBtn}</button>` : ''}
+
       </div>
+
       <div class="banner-tag">${esc(tag)}</div>
+
       <div class="banner-title">${esc(title)}</div>
+
       <div class="banner-meta">By <strong>${esc(author)}</strong> · ${esc(date)}</div>
+
     </div>
+
     <svg class="wave-shape" viewBox="0 0 1440 90" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+
       <path fill="#ffffff">
+
         <animate attributeName="d" dur="5s" repeatCount="indefinite"
+
           values="
+
             M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,90 L0,90 Z;
+
             M0,55 C200,10 440,80 720,30 C960,5 1220,70 1440,45 L1440,90 L0,90 Z;
+
             M0,30 C300,70 560,0 800,50 C1040,80 1280,20 1440,50 L1440,90 L0,90 Z;
+
             M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,90 L0,90 Z
+
           "/>
+
       </path>
+
     </svg>
+
   </div>`;
+
 }
 
-/* ── ARTICLE OPEN ── */
+
+
 function openArticle(id) {
+
   const idNum = isNaN(id) ? id : Number(id);
+
   const a = getVisibleArticles().find(x=>x.id===idNum||x.id===id);
+
   if (!a) return;
+
   const main = document.getElementById('mainContent');
-  const delBtnLabel = isAdminMode ? `🗑 Delete` : '';
-  const delBtnOnclick = isAdminMode ? `promptDeleteArticle(${a.id})` : '';
+
   main.innerHTML = `
-    ${waveBanner(a.tag, a.title, a.author, a.date, "showPage('home')", isAdminMode ? `<span onclick="${delBtnOnclick}" style="cursor:pointer;">🗑 Delete</span>` : '')}
+
+    ${waveBanner(a.tag, a.title, a.author, a.date, "showPage('home')", isAdminMode ? `<span onclick="promptDeleteArticle(${a.id})" style="cursor:pointer;">🗑 Delete</span>` : '')}
+
     <div class="article-page" style="padding-top:32px;">
+
       <img class="art-hero-img" src="${a.image}" alt="${esc(a.title)}">
+
       <div class="article-body clearfix">${a.body}</div>
+
     </div>
+
     <div class="comments-section" id="commentsSection">
+
       ${renderComments('article_' + a.id)}
+
     </div>`;
+
   window.scrollTo(0,0);
+
 }
 
-/* ── UPLOADED ARTICLE OPEN ── */
+
+
 function openPDF(id) {
+
   const p = cachedPDFs.find(x=>x.id===id);
+
   if (!p) return;
+
   const main = document.getElementById('mainContent');
+
   const img = p.pdf_data || p.pdfData || '';
+
   const body = p.body_html || p.bodyHtml || '<p>No content.</p>';
+
   main.innerHTML = `
+
     ${waveBanner(p.tag, p.title, p.author, p.date, "showPage('pdfs')", isAdminMode ? `<span onclick="deletePDF('${p.id}')" style="cursor:pointer;">🗑 Delete</span>` : '')}
+
     <div class="article-page" style="padding-top:32px;">
+
       <img class="art-hero-img" src="${img}" alt="${esc(p.title)}">
+
       <div class="article-body clearfix" style="margin-top:24px;">${body}</div>
+
     </div>
+
     <div class="comments-section" id="commentsSection">
+
       ${renderComments('pdf_' + p.id)}
+
     </div>`;
+
   window.scrollTo(0,0);
+
 }
 
-/* ── CARDS ── */
+
+
 function articleCard(a) {
+
   const delBtn = isAdminMode ? `<button class="admin-delete-article" onclick="event.stopPropagation();promptDeleteArticle(${a.id})" title="Delete article">🗑</button>` : '';
+
   return `<div class="card" onclick="openArticle(${a.id})">
+
     ${delBtn}
+
     <img src="${a.image}" alt="${esc(a.title)}" loading="lazy">
+
     <div class="card-body">
+
       <div class="card-cat">${esc(a.tag)}</div>
+
       <h3>${esc(a.title)}</h3>
+
       <div class="card-meta">${esc(a.author)} · ${esc(a.date)}</div>
+
     </div>
+
   </div>`;
+
 }
+
+
 
 function pdfCard(p) {
-  const delBtn = isAdminMode ? `<button class="delete-pdf-btn" onclick="event.stopPropagation();deletePDF('${p.id}')" title="Delete">🗑</button>` : '';
+
   const img = p.pdf_data || p.pdfData || '';
+
   return `<div class="card uploaded-article-card" onclick="openPDF('${p.id}')">
+
     ${isAdminMode ? `<button class="admin-delete-article" onclick="event.stopPropagation();deletePDF('${p.id}')" title="Delete">🗑</button>` : ''}
+
     <img class="card-img" src="${img}" alt="${esc(p.title)}" loading="lazy">
+
     <div class="card-body">
+
       <div class="card-cat">${esc(p.tag)}</div>
+
       <h3>${esc(p.title)}</h3>
+
       ${p.excerpt ? `<p style="font-size:13px;color:#555;margin-top:4px;line-height:1.4;">${esc(p.excerpt)}</p>` : ''}
-      <div class="card-meta" style="margin-top:8px;">${esc(p.author)} · ${esc(p.date)} ${delBtn}</div>
+
+      <div class="card-meta" style="margin-top:8px;">${esc(p.author)} · ${esc(p.date)}</div>
+
     </div>
+
   </div>`;
+
 }
 
-/* ── SEARCH ── */
+
+
 function handleSearch(e) {
+
   if (e.key !== 'Enter') return;
+
   const val = document.getElementById('searchInput').value.trim();
+
   if (!val) return;
 
-  // Password check — toggles admin mode on
   if (val === PASSWORD) {
+
     document.getElementById('searchInput').value = '';
+
     setAdminMode(true);
+
     return;
+
   }
 
   document.getElementById('searchInput').value = '';
+
   setActiveNav('search');
+
   renderSearch(val);
+
 }
+
+
 
 function renderSearch(query) {
+
   const q = query.toLowerCase().trim();
+
   const arts = getVisibleArticles().filter(a =>
-    a.title.toLowerCase().includes(q) ||
-    a.excerpt.toLowerCase().includes(q) ||
-    a.tag.toLowerCase().includes(q)
+
+    a.title.toLowerCase().includes(q) || a.excerpt.toLowerCase().includes(q) || a.tag.toLowerCase().includes(q)
+
   );
+
   const pdfs = cachedPDFs.filter(p =>
-    p.title.toLowerCase().includes(q) ||
-    p.tag.toLowerCase().includes(q) ||
-    p.excerpt.toLowerCase().includes(q)
+
+    p.title.toLowerCase().includes(q) || p.tag.toLowerCase().includes(q) || (p.excerpt||'').toLowerCase().includes(q)
+
   );
+
   const combined = [...arts, ...pdfs];
+
   const main = document.getElementById('mainContent');
-  let html = `<div class="search-results-page">
-    <h2>Results for "${esc(query)}" — ${combined.length} found</h2>`;
-  if (!combined.length) {
-    html += `<div class="no-results">No articles matched your search.</div>`;
-  } else {
-    html += `<div class="card-grid three-col">`;
-    combined.forEach(a => { html += (a.pdfData || a.pdf_data) ? pdfCard(a) : articleCard(a); });
-    html += `</div>`;
-  }
+
+  let html = `<div class="search-results-page"><h2>Results for "${esc(query)}" — ${combined.length} found</h2>`;
+
+  if (!combined.length) { html += `<div class="no-results">No articles matched.</div>`; }
+
+  else { html += `<div class="card-grid three-col">`; combined.forEach(a => { html += (a.pdfData||a.pdf_data)?pdfCard(a):articleCard(a); }); html += `</div>`; }
+
   html += `</div>`;
+
   main.innerHTML = html;
+
 }
 
-/* ── MODAL ── */
+
+
 function openModal() {
+
   if (!isAdminMode) return;
+
   document.getElementById('pdfModal').classList.add('open');
+
   document.getElementById('pdfTitle').value = '';
+
   document.getElementById('pdfAuthor').value = '';
+
   document.getElementById('pdfTag').value = '';
+
   document.getElementById('pdfExcerpt').value = '';
+
   document.getElementById('pdfChosen').textContent = '';
+
   document.getElementById('uploadSuccess').style.display = 'none';
+
   selectedPdfData = null;
+
 }
 
-function closeModal() {
-  document.getElementById('pdfModal').classList.remove('open');
-}
+function closeModal() { document.getElementById('pdfModal').classList.remove('open'); }
 
-// Close on backdrop click
-document.getElementById('pdfModal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+document.getElementById('pdfModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 
-/* ── DROP ZONE (IMAGE) ── */
+
+
 function setupDropZone() {
+
   const dz = document.getElementById('dropZone');
+
   const fi = document.getElementById('pdfFileInput');
 
   fi.addEventListener('change', () => { if (fi.files[0]) readImage(fi.files[0]); });
 
   dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
+
   dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+
   dz.addEventListener('drop', e => {
-    e.preventDefault();
-    dz.classList.remove('over');
+
+    e.preventDefault(); dz.classList.remove('over');
+
     const f = e.dataTransfer.files[0];
+
     if (f && f.type.startsWith('image/')) readImage(f);
+
     else alert('Please drop an image file.');
+
   });
+
 }
+
+
 
 function readImage(file) {
-  selectedImageFile = file; // store raw File for upload
+
+  selectedImageFile = file;
+
   const reader = new FileReader();
+
   reader.onload = function(e) {
-    selectedPdfData = e.target.result; // keep base64 for preview only
+
+    selectedPdfData = e.target.result;
+
     document.getElementById('pdfChosen').textContent = '✓ ' + file.name;
+
     const preview = document.getElementById('imgPreview');
+
     preview.src = e.target.result;
+
     preview.style.display = 'block';
+
     document.getElementById('dzIcon').style.display = 'none';
+
     document.getElementById('dzText').style.display = 'none';
+
   };
+
   reader.readAsDataURL(file);
+
 }
+
+
 
 function fmt(cmd) { document.execCommand(cmd, false, null); document.getElementById('articleBody').focus(); }
-function fmtBlock(tag) { document.execCommand('formatBlock', false, tag); document.getElementById('articleBody').focus(); }
-function insertLink() {
-  const url = prompt('Enter URL:');
-  if (url) document.execCommand('createLink', false, url);
-  document.getElementById('articleBody').focus();
-}
 
-/* ── SAVE ARTICLE ── */
+function fmtBlock(tag) { document.execCommand('formatBlock', false, tag); document.getElementById('articleBody').focus(); }
+
+function insertLink() { const url = prompt('Enter URL:'); if (url) document.execCommand('createLink', false, url); document.getElementById('articleBody').focus(); }
+
+
+
 async function savePDF() {
+
   const title = document.getElementById('pdfTitle').value.trim();
+
   const category = document.getElementById('pdfCategory').value;
+
   const body = document.getElementById('articleBody').innerHTML.trim();
+
   if (!title) { alert('Please enter a headline.'); return; }
+
   if (!selectedPdfData) { alert('Please choose a cover image.'); return; }
-  if (!body || body === '') { alert('Please write some article content.'); return; }
+
+  if (!body) { alert('Please write some article content.'); return; }
 
   const btn = document.querySelector('#pdfModal .btn-primary');
+
   if (btn) { btn.textContent = 'Uploading…'; btn.disabled = true; }
 
-  let imageUrl = selectedPdfData; // fallback to base64 if storage fails
+  let imageUrl = selectedPdfData;
 
-  // Upload image to Supabase Storage if we have the raw file
   if (selectedImageFile) {
+
     try {
+
       const fileExt = selectedImageFile.name.split('.').pop().toLowerCase();
+
       const fileName = 'img_' + Date.now() + '.' + fileExt;
-      const uploadRes = await fetch(
-        SUPABASE_URL + '/storage/v1/object/article-images/' + fileName,
-        {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': 'Bearer ' + SUPABASE_KEY,
-            'Content-Type': selectedImageFile.type,
-            'x-upsert': 'true'
-          },
-          body: selectedImageFile
-        }
-      );
-      if (uploadRes.ok) {
-        imageUrl = SUPABASE_URL + '/storage/v1/object/public/article-images/' + fileName;
-      } else {
-        const errText = await uploadRes.text();
-        console.warn('Storage upload failed, using base64 fallback:', errText);
-      }
-    } catch(e) {
-      console.warn('Storage upload error, using base64 fallback:', e);
-    }
+
+      const uploadRes = await fetch(SUPABASE_URL + '/storage/v1/object/article-images/' + fileName, {
+
+        method: 'POST',
+
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': selectedImageFile.type, 'x-upsert': 'true' },
+
+        body: selectedImageFile
+
+      });
+
+      if (uploadRes.ok) imageUrl = SUPABASE_URL + '/storage/v1/object/public/article-images/' + fileName;
+
+    } catch(e) { console.warn('Storage upload error, using base64:', e); }
+
   }
 
   const newArticle = {
-    id: 'pdf_' + Date.now(),
-    title,
+
+    id: 'pdf_' + Date.now(), title,
+
     author: document.getElementById('pdfAuthor').value.trim() || 'Anonymous',
-    category,
-    tag: document.getElementById('pdfTag').value.trim() || 'Article',
+
+    category, tag: document.getElementById('pdfTag').value.trim() || 'Article',
+
     excerpt: document.getElementById('pdfExcerpt').value.trim(),
+
     date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }),
+
     trending: document.getElementById('pdfTrending').value === 'yes',
-    pdf_data: imageUrl,
-    body_html: body
+
+    pdf_data: imageUrl, body_html: body
+
   };
 
   try {
+
     await sbFetch('pdfs', { method: 'POST', body: newArticle });
+
     cachedPDFs.unshift({ ...newArticle });
+
   } catch(e) {
+
     if (btn) { btn.textContent = 'Publish Article →'; btn.disabled = false; }
-    alert('Upload failed: ' + e.message);
-    return;
+
+    alert('Upload failed: ' + e.message); return;
+
   }
 
   document.getElementById('uploadSuccess').style.display = 'block';
-  selectedPdfData = null;
-  selectedImageFile = null;
+
+  selectedPdfData = null; selectedImageFile = null;
+
   document.getElementById('pdfChosen').textContent = '';
+
   document.getElementById('pdfTitle').value = '';
+
   document.getElementById('articleBody').innerHTML = '';
+
   document.getElementById('imgPreview').style.display = 'none';
+
   document.getElementById('dzIcon').style.display = 'block';
+
   document.getElementById('dzText').style.display = 'block';
 
   if (btn) { btn.textContent = 'Publish Article →'; btn.disabled = false; }
+
   setTimeout(() => { closeModal(); showPage(currentPage); }, 1200);
+
 }
 
-/* ── DELETE PDF ── */
+
+
 async function deletePDF(id) {
+
   if (!isAdminMode) return;
-  if (!confirm('Delete this PDF article?')) return;
+
+  if (!confirm('Delete this article?')) return;
+
   try {
-    await sbFetch('pdfs?id=eq.' + encodeURIComponent(id), {
-      method: 'DELETE',
-      prefer: 'return=minimal'
-    });
+
+    await sbFetch('pdfs?id=eq.' + encodeURIComponent(id), { method: 'DELETE', prefer: 'return=minimal' });
+
     cachedPDFs = cachedPDFs.filter(p => p.id !== id);
+
     showPage(currentPage);
-  } catch(e) {
-    console.error('deletePDF error:', e);
-    alert('Delete failed: ' + e.message);
-  }
+
+  } catch(e) { alert('Delete failed: ' + e.message); }
+
 }
 
-/* ── HELPERS ── */
+
+
 function sectionHeader(label, linkTarget) {
+
   const seeAll = linkTarget ? `<button class="see-all" onclick="showPage('${linkTarget}')">See All →</button>` : '';
+
   return `<div class="section-header"><h2>${esc(label)}</h2><div class="line"></div>${seeAll}</div>`;
+
 }
 
-function esc(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function esc(str) { if (!str) return ''; return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-/* ── SOCIAL MEDIA ── */
-const SOCIAL_ICONS = {
-  instagram: '📸', twitter: '🐦', facebook: '📘', tiktok: '🎵',
-  youtube: '▶️', linkedin: '💼', threads: '🧵', other: '🌐'
-};
+
+
+const SOCIAL_ICONS = { instagram: '📸', twitter: '🐦', facebook: '📘', tiktok: '🎵', youtube: '▶️', linkedin: '💼', threads: '🧵', other: '🌐' };
+
+
 
 function renderFooterSocials() {
+
   const container = document.getElementById('footerSocials');
+
   let html = '';
+
   cachedSocials.forEach(s => {
+
     const icon = SOCIAL_ICONS[s.platform] || '🌐';
-    html += `<a class="social-link" href="${esc(s.url)}" target="_blank" rel="noopener">
-      <span class="social-icon">${icon}</span> ${esc(s.label)}
-    </a>`;
+
+    html += `<a class="social-link" href="${esc(s.url)}" target="_blank" rel="noopener"><span class="social-icon">${icon}</span> ${esc(s.label)}</a>`;
+
   });
+
   if (isAdminMode) {
+
     html += `<button class="footer-manage-btn" onclick="openSocialModal()">⚙ Manage Socials</button>`;
-    html += `<button class="footer-manage-btn" onclick="openModal()" style="border-color:rgba(255,255,255,0.3);color:rgba(255,255,255,0.6);">✍️ Upload Article</button>`;
+
+    html += `<button class="footer-manage-btn" onclick="openModal()">✍️ Upload Article</button>`;
+
+    html += `<button class="footer-manage-btn" onclick="openQuizEditor()">🧠 Create Quiz</button>`;
+
+    html += `<button class="footer-manage-btn" onclick="showPage('stats')">📊 Statistics</button>`;
+
   }
+
   container.innerHTML = html;
+
 }
+
+
 
 function openSocialModal() {
+
   if (!isAdminMode) return;
+
   document.getElementById('socialModal').classList.add('open');
+
   document.getElementById('socialLabel').value = '';
+
   document.getElementById('socialUrl').value = '';
+
   renderSocialList();
+
 }
 
-function closeSocialModal() {
-  document.getElementById('socialModal').classList.remove('open');
-}
+function closeSocialModal() { document.getElementById('socialModal').classList.remove('open'); }
 
-document.getElementById('socialModal').addEventListener('click', function(e) {
-  if (e.target === this) closeSocialModal();
-});
+document.getElementById('socialModal').addEventListener('click', function(e) { if (e.target === this) closeSocialModal(); });
+
+
 
 function renderSocialList() {
+
   const el = document.getElementById('socialList');
-  if (!cachedSocials.length) {
-    el.innerHTML = '<div style="color:#aaa;font-size:14px;text-align:center;padding:8px 0;">No social links yet.</div>';
-    return;
-  }
-  el.innerHTML = cachedSocials.map((s, i) => `
+
+  if (!cachedSocials.length) { el.innerHTML = '<div style="color:#aaa;font-size:14px;text-align:center;padding:8px 0;">No social links yet.</div>'; return; }
+
+  el.innerHTML = cachedSocials.map(s => `
+
     <div class="social-manage-row">
+
       <span class="sm-icon">${SOCIAL_ICONS[s.platform] || '🌐'}</span>
-      <div class="sm-info">
-        <div class="sm-name">${esc(s.label)}</div>
-        <div class="sm-url">${esc(s.url)}</div>
-      </div>
+
+      <div class="sm-info"><div class="sm-name">${esc(s.label)}</div><div class="sm-url">${esc(s.url)}</div></div>
+
       <button class="sm-del" onclick="deleteSocial('${s.id}')" title="Remove">🗑</button>
-    </div>
-  `).join('');
+
+    </div>`).join('');
+
 }
+
+
 
 async function addSocial() {
+
   const platform = document.getElementById('socialPlatform').value;
+
   const label = document.getElementById('socialLabel').value.trim();
+
   const url = document.getElementById('socialUrl').value.trim();
+
   if (!label) { alert('Please enter a display label.'); return; }
+
   if (!url) { alert('Please enter a URL.'); return; }
+
   try {
+
     const result = await sbFetch('socials', { method: 'POST', body: { platform, label, url } });
+
     cachedSocials.push(result[0] || { platform, label, url, id: Date.now() });
-  } catch(e) {
-    alert('Save failed: ' + e.message); return;
-  }
+
+  } catch(e) { alert('Save failed: ' + e.message); return; }
+
   document.getElementById('socialLabel').value = '';
+
   document.getElementById('socialUrl').value = '';
+
   renderSocialList();
+
   renderFooterSocials();
+
 }
+
+
 
 async function deleteSocial(id) {
+
   try {
-    await sbFetch('socials?id=eq.' + encodeURIComponent(id), {
-      method: 'DELETE',
-      prefer: 'return=minimal'
-    });
+
+    await sbFetch('socials?id=eq.' + encodeURIComponent(id), { method: 'DELETE', prefer: 'return=minimal' });
+
     cachedSocials = cachedSocials.filter(s => String(s.id) !== String(id));
-    renderSocialList();
-    renderFooterSocials();
-  } catch(e) {
-    console.error('deleteSocial error:', e);
-    alert('Delete failed: ' + e.message);
-  }
+
+    renderSocialList(); renderFooterSocials();
+
+  } catch(e) { alert('Delete failed: ' + e.message); }
+
 }
 
-/* ── DELETE HARDCODED ARTICLES ── */
+
+
 let pendingDeleteId = null;
 
 function promptDeleteArticle(id) {
+
   if (!isAdminMode) return;
+
   const a = ARTICLES.find(x => x.id === id);
+
   if (!a) return;
+
   pendingDeleteId = id;
+
   document.getElementById('deleteArticleTitle').textContent = '"' + a.title + '"';
+
   document.getElementById('deleteArticleModal').classList.add('open');
+
 }
 
-function closeDeleteModal() {
-  document.getElementById('deleteArticleModal').classList.remove('open');
-  pendingDeleteId = null;
-}
+function closeDeleteModal() { document.getElementById('deleteArticleModal').classList.remove('open'); pendingDeleteId = null; }
 
-document.getElementById('deleteArticleModal').addEventListener('click', function(e) {
-  if (e.target === this) closeDeleteModal();
-});
+document.getElementById('deleteArticleModal').addEventListener('click', function(e) { if (e.target === this) closeDeleteModal(); });
+
+
 
 async function confirmDeleteArticle() {
+
   if (pendingDeleteId == null) return;
+
   try {
-    await sbFetch('deleted_articles', {
-      method: 'POST',
-      body: { article_id: pendingDeleteId },
-      prefer: 'resolution=ignore-duplicates,return=minimal'
-    });
-    if (!deletedArticleIds.includes(pendingDeleteId)) {
-      deletedArticleIds.push(pendingDeleteId);
-    }
-    closeDeleteModal();
-    showPage(currentPage);
-  } catch(e) {
-    console.error('confirmDeleteArticle error:', e);
-    alert('Delete failed: ' + e.message);
-  }
+
+    await sbFetch('deleted_articles', { method: 'POST', body: { article_id: pendingDeleteId }, prefer: 'resolution=ignore-duplicates,return=minimal' });
+
+    if (!deletedArticleIds.includes(pendingDeleteId)) deletedArticleIds.push(pendingDeleteId);
+
+    closeDeleteModal(); showPage(currentPage);
+
+  } catch(e) { alert('Delete failed: ' + e.message); }
+
 }
 
-function getVisibleArticles() {
-  return ARTICLES.filter(a => !deletedArticleIds.includes(a.id));
-}
 
-/* ── COMMENTS ── */
-function getComments(articleKey) {
-  try { return JSON.parse(localStorage.getItem('comments_' + articleKey) || '[]'); }
-  catch(e) { return []; }
-}
-function saveComments(articleKey, arr) {
-  localStorage.setItem('comments_' + articleKey, JSON.stringify(arr));
-}
+
+function getVisibleArticles() { return ARTICLES.filter(a => !deletedArticleIds.includes(a.id)); }
+
+
+
+function getComments(articleKey) { try { return JSON.parse(localStorage.getItem('comments_' + articleKey) || '[]'); } catch(e) { return []; } }
+
+function saveComments(articleKey, arr) { localStorage.setItem('comments_' + articleKey, JSON.stringify(arr)); }
+
+
 
 function renderComments(articleKey) {
+
   const comments = getComments(articleKey);
+
   let html = `<div class="comments-title">💬 Comments (${comments.length})</div>
+
   <div class="comment-form">
+
     <input type="text" id="commentName" placeholder="Your name" maxlength="50">
+
     <textarea id="commentText" placeholder="What do you think?"></textarea>
+
     <button onclick="submitComment('${articleKey}')">Post Comment →</button>
+
   </div>
+
   <div class="comment-list" id="commentList_${articleKey}">`;
-  if (!comments.length) {
-    html += `<div class="no-comments">No comments yet — be the first!</div>`;
-  } else {
+
+  if (!comments.length) { html += `<div class="no-comments">No comments yet — be the first!</div>`; }
+
+  else {
+
     comments.slice().reverse().forEach((c, i) => {
+
       const idx = comments.length - 1 - i;
+
       const initials = c.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+
       html += `<div class="comment-item">
+
         <div class="comment-avatar">${initials}</div>
+
         <div class="comment-body">
+
           <span class="comment-author">${esc(c.name)}</span>
+
           <span class="comment-date">${esc(c.date)}</span>
+
           <div class="comment-text">${esc(c.text)}</div>
-          <span class="comment-likes" onclick="likeComment('${articleKey}',${idx},this)">
-            ♥ <span class="like-count">${c.likes||0}</span>
-          </span>
+
+          <span class="comment-likes" onclick="likeComment('${articleKey}',${idx},this)">♥ <span class="like-count">${c.likes||0}</span></span>
+
         </div>
+
       </div>`;
+
     });
+
   }
+
   html += `</div>`;
+
   return html;
+
 }
+
+
 
 function submitComment(articleKey) {
+
   const name = (document.getElementById('commentName').value || '').trim();
+
   const text = (document.getElementById('commentText').value || '').trim();
+
   if (!name) { alert('Please enter your name.'); return; }
+
   if (!text) { alert('Please write a comment.'); return; }
+
   const comments = getComments(articleKey);
+
   comments.push({ name, text, date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}), likes:0 });
+
   saveComments(articleKey, comments);
+
   document.getElementById('commentName').value = '';
+
   document.getElementById('commentText').value = '';
-  document.getElementById('commentList_' + articleKey).outerHTML = '';
-  const section = document.getElementById('commentsSection');
-  section.innerHTML = renderComments(articleKey);
+
+  document.getElementById('commentsSection').innerHTML = renderComments(articleKey);
+
 }
+
+
 
 function likeComment(articleKey, idx, el) {
+
   const comments = getComments(articleKey);
+
   comments[idx].likes = (comments[idx].likes || 0) + 1;
+
   saveComments(articleKey, comments);
+
   el.querySelector('.like-count').textContent = comments[idx].likes;
+
   el.style.color = 'var(--red)';
+
 }
 
-/* ── TICKER ── */
+
+
 function buildTicker() {
-  const headlines = [
-    ...ARTICLES.map(a => a.title),
-    ...cachedPDFs.map(p => p.title)
-  ].filter(Boolean).slice(0, 12);
+
+  const headlines = [...ARTICLES.map(a => a.title), ...cachedPDFs.map(p => p.title)].filter(Boolean).slice(0, 12);
+
   if (!headlines.length) return;
-  // duplicate for seamless loop
+
   const all = [...headlines, ...headlines];
+
   const inner = document.getElementById('tickerInner');
+
   if (!inner) return;
+
   inner.innerHTML = all.map(h => `<span>${esc(h)}</span>`).join('');
+
 }
 
-/* ── INLINE IMAGE IN EDITOR ── */
+
+
 function insertInlineImage() {
+
   const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
+
+  input.type = 'file'; input.accept = 'image/*';
+
   input.onchange = () => {
-    const file = input.files[0];
-    if (!file) return;
+
+    const file = input.files[0]; if (!file) return;
+
     const reader = new FileReader();
+
     reader.onload = e => {
+
       const editor = document.getElementById('articleBody');
+
       const wrap = document.createElement('div');
-      wrap.className = 'editor-img-wrap';
-      wrap.contentEditable = 'false';
+
+      wrap.className = 'editor-img-wrap'; wrap.contentEditable = 'false';
+
       wrap.innerHTML = `
+
         <div class="img-controls">
-          <button type="button" onclick="setImgAlign(this,'img-left')" title="Float left">◀ Left</button>
-          <button type="button" onclick="setImgAlign(this,'img-full')" class="active" title="Full width">⬛ Full</button>
-          <button type="button" onclick="setImgAlign(this,'img-right')" title="Float right">Right ▶</button>
-          <button type="button" onclick="this.closest('.editor-img-wrap').remove()" title="Remove" style="color:#ff6b6b;">✕ Remove</button>
+
+          <button type="button" onclick="setImgAlign(this,'img-left')">◀ Left</button>
+
+          <button type="button" onclick="setImgAlign(this,'img-full')" class="active">⬛ Full</button>
+
+          <button type="button" onclick="setImgAlign(this,'img-right')">Right ▶</button>
+
+          <button type="button" onclick="this.closest('.editor-img-wrap').remove()" style="color:#ff6b6b;">✕</button>
+
         </div>
+
         <img src="${e.target.result}" class="img-full" alt="inline image">`;
-      // Insert a spacer paragraph after so cursor can continue
-      const spacer = document.createElement('p');
-      spacer.innerHTML = '<br>';
+
+      const spacer = document.createElement('p'); spacer.innerHTML = '<br>';
+
       editor.focus();
+
       const sel = window.getSelection();
+
       if (sel && sel.rangeCount) {
-        const range = sel.getRangeAt(0);
-        range.deleteContents();
-        range.insertNode(spacer);
-        range.insertNode(wrap);
-        // Move cursor after the spacer
-        const newRange = document.createRange();
-        newRange.setStartAfter(spacer);
-        newRange.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(newRange);
-      } else {
-        editor.appendChild(wrap);
-        editor.appendChild(spacer);
-      }
+
+        const range = sel.getRangeAt(0); range.deleteContents();
+
+        range.insertNode(spacer); range.insertNode(wrap);
+
+        const newRange = document.createRange(); newRange.setStartAfter(spacer); newRange.collapse(true);
+
+        sel.removeAllRanges(); sel.addRange(newRange);
+
+      } else { editor.appendChild(wrap); editor.appendChild(spacer); }
+
     };
+
     reader.readAsDataURL(file);
+
   };
+
   input.click();
+
 }
+
+
 
 function setImgAlign(btn, cls) {
+
   const wrap = btn.closest('.editor-img-wrap');
+
   const img = wrap.querySelector('img');
+
   img.className = cls;
+
   wrap.querySelectorAll('.img-controls button').forEach(b => b.classList.remove('active'));
+
   btn.classList.add('active');
+
 }
 
-/* ── MOBILE NAV FUNCTIONS ── */
-function toggleMobileNav() {
-  const overlay = document.getElementById('mobileNavOverlay');
-  overlay.classList.contains('open') ? closeMobileNav() : openMobileNav();
-}
-function openMobileNav() {
-  document.getElementById('mobileNavOverlay').classList.add('open');
-  document.getElementById('hamburgerBtn').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeMobileNav() {
-  document.getElementById('mobileNavOverlay').classList.remove('open');
-  document.getElementById('hamburgerBtn').classList.remove('open');
-  document.body.style.overflow = '';
-}
+
+
+function toggleMobileNav() { const o = document.getElementById('mobileNavOverlay'); o.classList.contains('open') ? closeMobileNav() : openMobileNav(); }
+
+function openMobileNav() { document.getElementById('mobileNavOverlay').classList.add('open'); document.getElementById('hamburgerBtn').classList.add('open'); document.body.style.overflow = 'hidden'; }
+
+function closeMobileNav() { document.getElementById('mobileNavOverlay').classList.remove('open'); document.getElementById('hamburgerBtn').classList.remove('open'); document.body.style.overflow = ''; }
+
 function buildMobileNav() {
-  const wrap = document.getElementById('mobileNavLinks');
-  if (!wrap) return;
-  const pages = [
-    { id: 'home', label: '&#x1F3E0; Home' },
-    ...SITE.sections.map(s => ({ id: s.id, label: '&#x1F4C2; ' + s.label })),
-    { id: 'trending', label: '&#x1F525; Trending' },
-    { id: 'about', label: 'About Us' }
-  ];
-  wrap.innerHTML = pages.map(p =>
-    '<button data-mob-page="' + p.id + '" onclick="mobileGoPage(\'' + p.id + '\')">' + p.label + '</button>'
-  ).join('');
+
+  const wrap = document.getElementById('mobileNavLinks'); if (!wrap) return;
+
+  const pages = [{ id:'home', label:'🏠 Home' }, ...SITE.sections.map(s=>({id:s.id,label:'📂 '+s.label})), {id:'quizzes',label:'🧠 Quizzes'}, {id:'trending',label:'🔥 Trending'}, {id:'about',label:'About Us'}];
+
+  wrap.innerHTML = pages.map(p => `<button data-mob-page="${p.id}" onclick="mobileGoPage('${p.id}')">${p.label}</button>`).join('');
+
 }
-function mobileGoPage(pageId) {
-  closeMobileNav();
-  currentSection = SITE.sections.find(s => s.id === pageId) || null;
-  showPage(pageId);
-}
+
+function mobileGoPage(pageId) { closeMobileNav(); currentSection = SITE.sections.find(s=>s.id===pageId)||null; showPage(pageId); }
+
 function mobileNav(tab) {
-  if (tab === 'search-tab') {
-    openMobileNav();
-    setTimeout(() => { const inp = document.getElementById('mobileSearchInput'); if (inp) inp.focus(); }, 280);
-    return;
-  }
-  currentSection = SITE.sections.find(s => s.id === tab) || null;
-  showPage(tab);
+
+  if (tab === 'search-tab') { openMobileNav(); setTimeout(() => { const inp = document.getElementById('mobileSearchInput'); if (inp) inp.focus(); }, 280); return; }
+
+  currentSection = SITE.sections.find(s=>s.id===tab)||null; showPage(tab);
+
 }
+
 function handleMobileSearch(e) {
+
   if (e.key !== 'Enter') return;
+
   const q = (document.getElementById('mobileSearchInput').value || '').trim();
-  if (!q) return;
-  closeMobileNav();
-  document.getElementById('searchInput').value = q;
-  renderSearch(q);
-  setActiveNav('search');
+
+  if (!q) return; closeMobileNav(); renderSearch(q); setActiveNav('search');
+
 }
 
 
-function initMobileAndSite() { buildMobileNav(); init(); }
+
+
+
+/* ══════════════════════════════════════
+
+   QUIZ ENGINE
+
+   ══════════════════════════════════════ */
+
+
+
+const PREMADE_QUIZZES = [
+
+
+
+  /* ══ KNOWLEDGE: World Leaders 2025 — Updated & Expanded ══ */
+
+  {
+
+    id: 'wl-2025',
+
+    title: 'World Leaders 2025 — The Ultimate Quiz',
+
+    category: 'World Leaders',
+
+    emoji: '🌍',
+
+    color: '#1a1a2e',
+
+    premade: true,
+
+    questions: [
+
+      {
+
+        q: 'Donald Trump is currently serving as which number U.S. President?',
+
+        options: ['44th', '45th', '47th', '46th'],
+
+        answer: 2,
+
+        fact: 'Trump is the 47th President, having also served as the 45th.'
+
+      },
+
+      {
+
+        q: 'Who is the Prime Minister of the United Kingdom as of 2025?',
+
+        options: ['Boris Johnson', 'Rishi Sunak', 'Keir Starmer', 'Liz Truss'],
+
+        answer: 2,
+
+        fact: 'Keir Starmer became PM in July 2024 after Labour won the general election.'
+
+      },
+
+      {
+
+        q: 'Benjamin Netanyahu is the Prime Minister of which country?',
+
+        options: ['Jordan', 'Lebanon', 'Palestine', 'Israel'],
+
+        answer: 3,
+
+        fact: 'Netanyahu is one of the longest-serving leaders in Israeli history.'
+
+      },
+
+      {
+
+        q: 'Who became Germany\'s Chancellor in 2025?',
+
+        options: ['Annalena Baerbock', 'Olaf Scholz', 'Friedrich Merz', 'Angela Merkel'],
+
+        answer: 2,
+
+        fact: 'Friedrich Merz of the CDU became Chancellor after the February 2025 elections.'
+
+      },
+
+      {
+
+        q: 'Ali Khamenei holds which title in Iran?',
+
+        options: ['President', 'Prime Minister', 'Supreme Leader', 'Ayatollah of Tehran'],
+
+        answer: 2,
+
+        fact: 'Khamenei has been Iran\'s Supreme Leader since 1989, holding ultimate political and religious authority.'
+
+      },
+
+      {
+
+        q: 'Who is the President of Peru as of 2025?',
+
+        options: ['Pedro Castillo', 'Ollanta Humala', 'Martín Vizcarra', 'Dina Boluarte'],
+
+        answer: 3,
+
+        fact: 'Dina Boluarte assumed the presidency in December 2022 after Pedro Castillo\'s impeachment.'
+
+      },
+
+      {
+
+        q: 'Queen Elizabeth II reigned as Britain\'s monarch for how many years?',
+
+        options: ['50 years', '62 years', '70 years', '45 years'],
+
+        answer: 2,
+
+        fact: 'Queen Elizabeth II reigned from 1952 until her death in September 2022 — 70 years, the longest in British history.'
+
+      },
+
+      {
+
+        q: 'Who succeeded Queen Elizabeth II as monarch of the United Kingdom?',
+
+        options: ['Prince William', 'King Charles III', 'Prince Harry', 'Princess Anne'],
+
+        answer: 1,
+
+        fact: 'King Charles III was proclaimed monarch immediately upon Queen Elizabeth II\'s death on 8 September 2022.'
+
+      },
+
+      {
+
+        q: 'Emmanuel Macron is the President of which country?',
+
+        options: ['Belgium', 'Switzerland', 'France', 'Luxembourg'],
+
+        answer: 2,
+
+        fact: 'Macron was first elected in 2017 and re-elected in 2022, becoming the first French president to win a second consecutive term since Jacques Chirac.'
+
+      },
+
+      {
+
+        q: 'Which country does Narendra Modi lead as Prime Minister?',
+
+        options: ['Pakistan', 'Bangladesh', 'Sri Lanka', 'India'],
+
+        answer: 3,
+
+        fact: 'Modi has been Prime Minister of India since 2014 and was re-elected for a third term in 2024.'
+
+      },
+
+      {
+
+        q: 'Masoud Pezeshkian became President of Iran in 2024. Who did he replace?',
+
+        options: ['Hassan Rouhani', 'Mahmoud Ahmadinejad', 'Ebrahim Raisi', 'Mohammad Khatami'],
+
+        answer: 2,
+
+        fact: 'Ebrahim Raisi died in a helicopter crash in May 2024, leading to snap elections won by reformist Pezeshkian.'
+
+      },
+
+      {
+
+        q: 'Who is the Secretary-General of the United Nations as of 2025?',
+
+        options: ['Ban Ki-moon', 'Kofi Annan', 'António Guterres', 'Amina Mohammed'],
+
+        answer: 2,
+
+        fact: 'António Guterres of Portugal has served as UN Secretary-General since January 2017.'
+
+      },
+
+      {
+
+        q: 'Luiz Inácio Lula da Silva returned to the presidency of which country in 2023?',
+
+        options: ['Argentina', 'Colombia', 'Chile', 'Brazil'],
+
+        answer: 3,
+
+        fact: 'Lula was first president 2003–2010, then returned to office in January 2023 after defeating Jair Bolsonaro.'
+
+      },
+
+      {
+
+        q: 'Which world leader is known by the nickname "Bibi"?',
+
+        options: ['Binyamin Netanyahu', 'Boris Johnson', 'Berlusconi', 'Biden'],
+
+        answer: 0,
+
+        fact: '"Bibi" is the long-standing nickname of Israeli Prime Minister Benjamin Netanyahu.'
+
+      },
+
+      {
+
+        q: 'Who is the current President of China?',
+
+        options: ['Li Keqiang', 'Wang Yi', 'Hu Jintao', 'Xi Jinping'],
+
+        answer: 3,
+
+        fact: 'Xi Jinping has been General Secretary of the Chinese Communist Party since 2012 and President since 2013.'
+
+      }
+
+    ]
+
+  },
+
+
+
+/* ══ PERSONALITY: What World Leader Are You? ══ */
+
+{
+  id: 'what-leader',
+  title: 'What World Leader Are You?',
+  category: 'Personality',
+  emoji: '👑',
+  color: '#1e3a5f',
+  premade: true,
+  type: 'personality',
+
+  results: [
+
+    {
+      id: 'trump',
+      label: 'Donald Trump',
+      emoji: '🇺🇸',
+      color: '#c0392b',
+      desc: 'Bold, confident, and impossible to ignore. You trust your instincts, enjoy taking charge, and never shy away from a challenge.',
+      traits: ['Bold', 'Confident', 'Competitive', 'Direct']
+    },
+
+    {
+      id: 'xi',
+      label: 'Xi Jinping',
+      emoji: '🇨🇳',
+      color: '#d32f2f',
+      desc: 'Patient and strategic. You prefer long-term planning over quick wins and always keep the bigger picture in mind.',
+      traits: ['Strategic', 'Patient', 'Focused', 'Organized']
+    },
+
+    {
+      id: 'modi',
+      label: 'Narendra Modi',
+      emoji: '🇮🇳',
+      color: '#ff9800',
+      desc: 'Energetic and ambitious. You inspire people with your vision and are always looking for the next big opportunity.',
+      traits: ['Charismatic', 'Ambitious', 'Persistent', 'Energetic']
+    },
+
+    {
+      id: 'macron',
+      label: 'Emmanuel Macron',
+      emoji: '🇫🇷',
+      color: '#1565c0',
+      desc: 'Diplomatic and analytical. You enjoy solving problems, bringing people together, and finding modern solutions.',
+      traits: ['Diplomatic', 'Analytical', 'Modern', 'Flexible']
+    },
+
+    {
+      id: 'dina',
+      label: 'Dina Boluarte',
+      emoji: '🇵🇪',
+      color: '#d50000',
+      desc: 'Resilient and adaptable. You stay calm during difficult situations and keep moving forward no matter the obstacles.',
+      traits: ['Resilient', 'Practical', 'Determined', 'Calm']
+    },
+
+    {
+      id: 'zelenskyy',
+      label: 'Volodymyr Zelenskyy',
+      emoji: '🇺🇦',
+      color: '#0057b7',
+      desc: 'Brave and inspiring. You stand by your values and motivate others through courage and determination.',
+      traits: ['Brave', 'Inspirational', 'Loyal', 'Determined']
+    }
+
+  ],
+
+  questions: [
+
+    {
+      q: 'When a problem appears, what do you do first?',
+      options: [
+        'Take charge immediately',
+        'Create a long-term plan',
+        'Inspire people to act',
+        'Look for a compromise',
+        'Adapt to the situation',
+        'Face it head-on'
+      ],
+      answer: [0,1,2,3,4,5]
+    },
+
+    {
+      q: 'What do your friends admire most about you?',
+      options: [
+        'Confidence',
+        'Strategic thinking',
+        'Charisma',
+        'Diplomacy',
+        'Resilience',
+        'Courage'
+      ],
+      answer: [0,1,2,3,4,5]
+    },
+
+    {
+      q: 'Which motto sounds most like you?',
+      options: [
+        'Go big or go home',
+        'Think five steps ahead',
+        'Dream bigger',
+        'Work together',
+        'Never give up',
+        'Stand your ground'
+      ],
+      answer: [0,1,2,3,4,5]
+    },
+
+    {
+      q: 'In a group project, you are usually:',
+      options: [
+        'The leader',
+        'The strategist',
+        'The motivator',
+        'The negotiator',
+        'The problem-solver',
+        'The protector'
+      ],
+      answer: [0,1,2,3,4,5]
+    },
+
+    {
+      q: 'Which quality matters most to you?',
+      options: [
+        'Strength',
+        'Discipline',
+        'Ambition',
+        'Cooperation',
+        'Perseverance',
+        'Loyalty'
+      ],
+      answer: [0,1,2,3,4,5]
+    },
+
+    {
+      q: 'Pick a word that best describes you:',
+      options: [
+        'Bold',
+        'Strategic',
+        'Ambitious',
+        'Diplomatic',
+        'Resilient',
+        'Brave'
+      ],
+      answer: [0,1,2,3,4,5]
+    },
+
+    {
+      q: 'How do you make important decisions?',
+      options: [
+        'Trust my instincts',
+        'Analyze every possibility',
+        'Follow my vision',
+        'Listen to everyone involved',
+        'Do what is practical',
+        'Do what is right'
+      ],
+      answer: [0,1,2,3,4,5]
+    },
+
+    {
+      q: 'What role would you choose in a movie?',
+      options: [
+        'The main character',
+        'The mastermind',
+        'The inspiring hero',
+        'The diplomat',
+        'The survivor',
+        'The defender'
+      ],
+      answer: [0,1,2,3,4,5]
+    }
+
+  ]
+},
+
+  /* ══ PERSONALITY: Which Country Are You? ══ */
+
+  {
+
+    id: 'which-country',
+
+    title: 'Which Country Are You?',
+
+    category: 'Personality',
+
+    emoji: '🌐',
+
+    color: '#0f172a',
+
+    premade: true,
+
+    type: 'personality',
+
+    results: [
+
+      { id: 'peru', label: 'Peru 🇵🇪', emoji: '🇵🇪', color: '#D91023', desc: 'Rich in ancient history, breathtaking landscapes, and vibrant culture. You carry deep roots and quiet strength. People underestimate you — until they visit and never want to leave.', traits: ['Historic','Resilient','Warm','Culturally rich'] },
+
+      { id: 'japan', label: 'Japan 🇯🇵', emoji: '🇯🇵', color: '#BC002D', desc: 'Precise, disciplined, and deeply creative. You balance tradition and innovation better than anyone. You are meticulous, fascinating, and always three steps ahead.', traits: ['Disciplined','Innovative','Respectful','Precise'] },
+
+      { id: 'brazil', label: 'Brazil 🇧🇷', emoji: '🇧🇷', color: '#009C3B', desc: 'Vibrant, generous, and full of life. You bring energy and warmth to every room. You believe joy and community are not luxuries — they are the point.', traits: ['Joyful','Social','Passionate','Resilient'] },
+
+      { id: 'germany', label: 'Germany 🇩🇪', emoji: '🇩🇪', color: '#DD0000', desc: 'Reliable, precise, and quietly powerful. You do not shout — you deliver. You take great pride in doing things properly, and your word is your bond.', traits: ['Reliable','Efficient','Principled','Organised'] },
+
+      { id: 'usa', label: 'United States 🇺🇸', emoji: '🇺🇸', color: '#3C3B6E', desc: 'Ambitious, loud, and undeniably influential. Love it or hate it, you shape the conversation. You dream big, move fast, and believe anything is possible with the right attitude.', traits: ['Ambitious','Bold','Influential','Optimistic'] },
+
+      { id: 'kenya', label: 'Kenya 🇰🇪', emoji: '🇰🇪', color: '#006600', desc: 'Fast-growing, young at heart, and bursting with potential. You are a rising force — dynamic, entrepreneurial, and deeply proud of your heritage.', traits: ['Dynamic','Entrepreneurial','Proud','Rising'] }
+
+    ],
+
+    questions: [
+
+      { q: 'Your ideal landscape is:', options: ['Ancient ruins and mountains','Cherry blossoms and bullet trains','Beaches and rainforest','Autobahn and castles','Skyscrapers and national parks','Savannahs and marathon tracks'], answer: [0,1,2,3,4,5] },
+
+      { q: 'Your relationship with tradition is:', options: ['I am rooted in it','I honour it and evolve it','I celebrate it loudly','I respect it while modernising','I remix it into something new','I am building new traditions now'], answer: [0,1,2,3,4,5] },
+
+      { q: 'At a party you are:', options: ['The one with the best stories','The one who organised everything','The one who brought the music','The one who brought the food','The loudest one in the room','The most energetic on the dancefloor'], answer: [0,1,2,3,4,5] },
+
+      { q: 'Your approach to problems:', options: ['Draw on history and patience','Plan meticulously and execute','Feel it out and adapt','Engineer the optimal solution','Throw resources at it boldly','Hustle hard and improvise'], answer: [0,1,2,3,4,5] },
+
+      { q: 'Others see you as:', options: ['Mysterious and deep','Disciplined and brilliant','Warm and passionate','Reliable and precise','Loud but lovable','Exciting and on the rise'], answer: [0,1,2,3,4,5] }
+
+    ]
+
+  },
+
+
+
+  /* ══ PERSONALITY: Which Committee Represents You? ══ */
+
+  {
+
+    id: 'which-committee',
+
+    title: 'Which Committee Represents You?',
+
+    category: 'Personality',
+
+    emoji: '🎙️',
+
+    color: '#1a1a2e',
+
+    premade: true,
+
+    type: 'personality',
+
+    results: [
+
+      { id: 'unsc', label: 'UN Security Council', emoji: '🛡️', color: '#1a1a2e', desc: 'You operate at the highest level of global power. Every word you say carries consequences. You thrive under pressure and understand that sometimes there are no good options — only necessary ones.', traits: ['High-stakes','Decisive','Powerful','Strategic'] },
+
+      { id: 'unwomen', label: 'UN Women', emoji: '♀️', color: '#4a1d96', desc: 'You lead with principle and empathy. You fight for those whose voices are too often silenced and you never confuse politeness with progress.', traits: ['Principled','Empathetic','Advocate','Justice-driven'] },
+
+      { id: 'disec', label: 'DISEC', emoji: '⚔️', color: '#7f1d1d', desc: 'You are technical, analytical, and you understand that global security is more complex than it appears. Arms, technology, and deterrence — you navigate them all with precision and realism.', traits: ['Analytical','Realist','Technical','Thorough'] },
+
+      { id: 'ecosoc', label: 'ECOSOC', emoji: '📈', color: '#065f46', desc: 'Numbers, policies, and sustainable development are your language. You see the economy as the foundation of everything else.', traits: ['Systems-thinker','Economic','Development-focused','Data-driven'] },
+
+      { id: 'press', label: 'International Press Corps', emoji: '📰', color: '#92400e', desc: 'You are a storyteller and truth-seeker. While others debate resolutions, you are asking the questions that no one else dares ask.', traits: ['Curious','Communicator','Observant','Tenacious'] },
+
+      { id: 'hrc', label: 'Human Rights Council', emoji: '✊', color: '#166534', desc: 'You believe dignity is non-negotiable. You challenge powerful nations when they violate their own commitments and you hold the line even when it is uncomfortable.', traits: ['Courageous','Idealistic','Accountability-focused','Persistent'] }
+
+    ],
+
+    questions: [
+
+      { q: 'What motivates you most in a debate?', options: ['Preventing catastrophic conflict','Giving voice to the marginalised','Understanding technical realities','Finding economic solutions','Telling the real story','Holding the powerful accountable'], answer: [0,1,2,3,4,5] },
+
+      { q: 'Your working style is best described as:', options: ['High-pressure and decisive','Compassionate and principled','Precise and research-heavy','Systematic and data-driven','Curious and investigative','Bold and confrontational'], answer: [0,1,2,3,4,5] },
+
+      { q: 'The topic you would most want to debate:', options: ['Nuclear weapons and global conflict','Gender equality and women\'s rights','Arms control and cybersecurity','Trade, poverty and development','Press freedom and misinformation','Human rights violations by states'], answer: [0,1,2,3,4,5] },
+
+      { q: 'In a crisis simulation you:', options: ['Take command and issue decisions','Advocate loudly for victims','Produce a detailed technical analysis','Model the economic impact','Write a breaking report on what\'s happening','File a formal complaint about violations'], answer: [0,1,2,3,4,5] },
+
+      { q: 'Your ideal role at MUN:', options: ['Permanent 5 power deciding outcomes','Lead advocate for a cause','Technical expert everyone relies on','Economic policy architect','Chief correspondent','Rights investigator'], answer: [0,1,2,3,4,5] }
+
+    ]
+
+  },
+
+
+
+  /* ══ KNOWLEDGE: Big Countries Quiz ══ */
+
+  {
+
+    id: 'big-countries',
+
+    title: 'Big Countries Quiz',
+
+    category: 'Countries',
+
+    emoji: '🗺️',
+
+    color: '#065f46',
+
+    premade: true,
+
+    questions: [
+
+      { q: 'What is the largest country in the world by area?', options: ['Canada','China','USA','Russia'], answer: 3 },
+
+      { q: 'What is the most populous country in the world?', options: ['China','India','USA','Indonesia'], answer: 1 },
+
+      { q: 'Which country has the longest coastline?', options: ['Australia','Russia','Canada','Norway'], answer: 2 },
+
+      { q: 'What is the smallest country in the world by area?', options: ['Monaco','San Marino','Vatican City','Liechtenstein'], answer: 2 },
+
+      { q: 'What is the capital of Australia?', options: ['Sydney','Melbourne','Brisbane','Canberra'], answer: 3 },
+
+      { q: 'Which is the longest river in the world?', options: ['Amazon','Congo','Nile','Yangtze'], answer: 2 },
+
+      { q: 'What country contains the largest portion of the Amazon Rainforest?', options: ['Colombia','Peru','Bolivia','Brazil'], answer: 3 },
+
+      { q: 'Which country has the most time zones?', options: ['USA','China','Russia','France'], answer: 2 }
+
+    ]
+
+  },
+
+
+
+  /* ══ KNOWLEDGE: Know Your Peru ══ */
+
+  {
+
+    id: 'peru-quiz',
+
+    title: 'Know Your Peru',
+
+    category: 'Geography',
+
+    emoji: '🇵🇪',
+
+    color: '#9f1239',
+
+    premade: true,
+
+    questions: [
+
+      { q: 'What is the capital city of Peru?', options: ['Cusco','Arequipa','Lima','Trujillo'], answer: 2 },
+
+      { q: 'What is the famous Inca citadel located in Peru?', options: ['Chichen Itza','Machu Picchu','Tulum','Tikal'], answer: 1 },
+
+      { q: 'Which ocean borders Peru to the west?', options: ['Atlantic Ocean','Indian Ocean','Arctic Ocean','Pacific Ocean'], answer: 3 },
+
+      { q: 'What is the currency of Peru?', options: ['Peso','Sol','Boliviano','Real'], answer: 1 },
+
+      { q: 'Lake Titicaca is shared between Peru and which country?', options: ['Chile','Ecuador','Bolivia','Colombia'], answer: 2 },
+
+      { q: 'The Nazca Lines are located in which country?', options: ['Bolivia','Ecuador','Colombia','Peru'], answer: 3 },
+
+      { q: 'What ancient civilisation built Machu Picchu?', options: ['Aztec','Maya','Inca','Olmec'], answer: 2 },
+
+      { q: 'Which river system begins in Peru and flows to the Atlantic?', options: ['Orinoco','Paraná','Amazon','São Francisco'], answer: 2 }
+
+    ]
+
+  }
+
+];
+
+
+
+let cachedQuizzes = [];
+
+let quizState = null;
+
+let editingQuizId = null;
+
+let quizStats = {};
+
+
+
+async function loadQuizzes() {
+
+  try {
+
+    const rows = await sbFetch('quizzes?order=created_at.desc');
+
+    cachedQuizzes = rows || [];
+
+  } catch(e) { cachedQuizzes = []; }
+
+  try {
+
+    const rows = await sbFetch('quiz_stats?order=quiz_id.asc');
+
+    quizStats = {};
+
+    (rows || []).forEach(r => { quizStats[r.quiz_id] = r; });
+
+  } catch(e) { quizStats = {}; }
+
+}
+
+
+
+function getAllQuizzes() { return [...PREMADE_QUIZZES, ...cachedQuizzes]; }
+
+
+
+function renderQuizPage(main) {
+
+  const all = getAllQuizzes();
+
+  let html = `<div class="quiz-page">
+
+    <h1>Quizzes</h1>
+
+    <p class="quiz-sub">${all.length} quiz${all.length!==1?'es':''} · Knowledge &amp; Personality</p>
+
+    <div class="quiz-grid">`;
+
+  all.forEach(q => {
+
+    const adminBtns = isAdminMode ? `
+
+      <div class="admin-quiz-actions">
+
+        <button class="admin-quiz-btn" onclick="event.stopPropagation();editQuiz('${q.id}')" title="Edit">✏️</button>
+
+        ${!q.premade ? `<button class="admin-quiz-btn" onclick="event.stopPropagation();deleteQuiz('${q.id}')" title="Delete">🗑</button>` : ''}
+
+      </div>` : '';
+
+    const stats = quizStats[q.id];
+
+    const plays = stats ? stats.plays : 0;
+
+    html += `<div class="quiz-card" onclick="startQuiz('${q.id}')">
+
+      ${adminBtns}
+
+      <div class="quiz-card-banner" style="background:${q.color||'#e8001c'};">${q.emoji||'🧠'}</div>
+
+      <div class="quiz-card-body">
+
+        <div class="quiz-card-tag">${q.category||'Quiz'}</div>
+
+        ${q.type==='personality' ? '<span class="quiz-type-badge personality">Personality</span>' : '<span class="quiz-type-badge knowledge">Knowledge</span>'}
+
+        <div class="quiz-card-title">${esc(q.title)}</div>
+
+        <div class="quiz-card-meta">${q.questions.length} questions · ${plays} play${plays!==1?'s':''}</div>
+
+      </div>
+
+    </div>`;
+
+  });
+
+  if (isAdminMode) {
+
+    html += `<div class="quiz-card" onclick="openQuizEditor()" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:180px;color:#bbb;">
+
+      <div style="text-align:center;"><div style="font-size:40px;margin-bottom:8px;">＋</div><div style="font-weight:800;font-size:15px;">Create Quiz</div></div>
+
+    </div>`;
+
+  }
+
+  html += `</div></div>`;
+
+  main.innerHTML = html;
+
+}
+
+
+
+function startQuiz(id) {
+
+  const quiz = getAllQuizzes().find(q => q.id === id || q.id === String(id));
+
+  if (!quiz) return;
+
+  const isPersonality = quiz.type === 'personality';
+
+  const personalityScores = {};
+
+  if (isPersonality && quiz.results) quiz.results.forEach(r => { personalityScores[r.id] = 0; });
+
+  quizState = { quiz, qIndex: 0, score: 0, answers: [], done: false, isPersonality, personalityScores };
+
+  renderQuizPlay(document.getElementById('mainContent'));
+
+}
+
+
+
+function renderQuizPlay(main) {
+
+  const { quiz, qIndex, done, isPersonality } = quizState;
+
+  if (done) { isPersonality ? renderPersonalityResult(main) : renderQuizResult(main); return; }
+
+  const q = quiz.questions[qIndex];
+
+  const letters = ['A','B','C','D'];
+
+  const pct = Math.round((qIndex / quiz.questions.length) * 100);
+
+  let html = `<div class="quiz-play">
+
+    <div class="quiz-play-header">
+
+      <button class="quiz-play-back" onclick="showPage('quizzes')">← Back</button>
+
+      <div class="quiz-play-title">${esc(quiz.title)}</div>
+
+    </div>
+
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
+
+    <div class="quiz-q-num">Question ${qIndex+1} of ${quiz.questions.length}</div>
+
+    <div class="quiz-question">${esc(q.q)}</div>
+
+    <div class="${isPersonality ? '' : 'quiz-options'}" id="quizOptions">`;
+
+  if (isPersonality) {
+
+    q.options.forEach((opt, i) => { html += `<button class="personality-option" onclick="answerPersonality(${i})">${esc(opt)}</button>`; });
+
+  } else {
+
+    q.options.forEach((opt, i) => {
+
+      html += `<button class="quiz-option" onclick="answerQuiz(${i})" data-idx="${i}">
+
+        <span class="quiz-option-letter">${letters[i]}</span>${esc(opt)}
+
+      </button>`;
+
+    });
+
+  }
+
+  html += `</div><div id="quizFeedback"></div></div>`;
+
+  main.innerHTML = html;
+
+}
+
+
+
+function answerQuiz(chosen) {
+
+  const { quiz, qIndex } = quizState;
+
+  const q = quiz.questions[qIndex];
+
+  const correct = q.answer;
+
+  const isRight = chosen === correct;
+
+  if (isRight) quizState.score++;
+
+  quizState.answers.push({ chosen, correct, isRight });
+
+  document.querySelectorAll('.quiz-option').forEach((btn, i) => {
+
+    btn.disabled = true;
+
+    if (i === correct) btn.classList.add('correct');
+
+    else if (i === chosen && !isRight) btn.classList.add('wrong');
+
+  });
+
+  const fb = document.getElementById('quizFeedback');
+
+  // Show fact if available
+
+  const factNote = q.fact ? `<div style="margin-top:8px;font-size:13px;font-weight:400;opacity:0.85;">📚 ${esc(q.fact)}</div>` : '';
+
+  fb.innerHTML = `<div class="quiz-feedback ${isRight?'correct':'wrong'}">
+
+    ${isRight ? '✅ Correct!' : `❌ The answer was <strong>${esc(q.options[correct])}</strong>`}
+
+    ${factNote}
+
+  </div>
+
+  <button class="quiz-next-btn" onclick="nextQuestion()">
+
+    ${qIndex+1 < quiz.questions.length ? 'Next Question →' : 'See Results →'}
+
+  </button>`;
+
+}
+
+
+
+function answerPersonality(chosen) {
+
+  const { quiz, qIndex, personalityScores } = quizState;
+
+  if (quiz.results && quiz.results[chosen]) {
+
+    personalityScores[quiz.results[chosen].id] = (personalityScores[quiz.results[chosen].id] || 0) + 1;
+
+  }
+
+  quizState.answers.push({ chosen });
+
+  document.querySelectorAll('.personality-option').forEach((btn, i) => { btn.disabled = true; if (i === chosen) btn.classList.add('selected'); });
+
+  const fb = document.getElementById('quizFeedback');
+
+  fb.innerHTML = `<button class="quiz-next-btn" onclick="nextQuestion()">${quizState.qIndex+1 < quiz.questions.length ? 'Next →' : 'See Your Result →'}</button>`;
+
+}
+
+
+
+function nextQuestion() {
+
+  quizState.qIndex++;
+
+  if (quizState.qIndex >= quizState.quiz.questions.length) { quizState.done = true; recordQuizPlay(); }
+
+  renderQuizPlay(document.getElementById('mainContent'));
+
+}
+
+
+
+async function recordQuizPlay() {
+
+  const { quiz, score } = quizState;
+
+  const existing = quizStats[quiz.id];
+
+  const plays = (existing ? existing.plays : 0) + 1;
+
+  const totalScore = (existing ? existing.totalScore : 0) + score;
+
+  quizStats[quiz.id] = { quiz_id: quiz.id, plays, totalScore };
+
+  try {
+
+    if (existing) {
+
+      await sbFetch('quiz_stats?quiz_id=eq.' + encodeURIComponent(quiz.id), { method: 'PATCH', body: { plays, total_score: totalScore }, prefer: 'return=minimal' });
+
+    } else {
+
+      await sbFetch('quiz_stats', { method: 'POST', body: { quiz_id: quiz.id, quiz_title: quiz.title, plays, total_score: totalScore } });
+
+    }
+
+  } catch(e) { console.warn('Could not save quiz stats:', e); }
+
+}
+
+
+
+function renderQuizResult(main) {
+
+  const { quiz, score } = quizState;
+
+  const total = quiz.questions.length;
+
+  const pct = Math.round((score / total) * 100);
+
+  let emoji = '😔', title = 'Keep Trying!';
+
+  if (pct >= 90) { emoji = '🏆'; title = 'Genius!'; }
+
+  else if (pct >= 70) { emoji = '🌟'; title = 'Great Job!'; }
+
+  else if (pct >= 50) { emoji = '👍'; title = 'Not Bad!'; }
+
+  main.innerHTML = `<div class="quiz-result">
+
+    <div class="quiz-result-emoji">${emoji}</div>
+
+    <div class="quiz-result-title">${title}</div>
+
+    <div class="quiz-result-score">You scored ${score} out of ${total}</div>
+
+    <div class="quiz-result-bar"><div class="quiz-result-fill" id="qResultFill" style="width:0%"></div></div>
+
+    <div class="quiz-result-pct">${pct}% correct</div>
+
+    <div class="quiz-result-btns">
+
+      <button class="quiz-result-btn primary" onclick="startQuiz('${quiz.id}')">Try Again</button>
+
+      <button class="quiz-result-btn secondary" onclick="showPage('quizzes')">All Quizzes</button>
+
+    </div>
+
+  </div>`;
+
+  setTimeout(() => { const fill = document.getElementById('qResultFill'); if (fill) fill.style.width = pct + '%'; }, 100);
+
+}
+
+
+
+function renderPersonalityResult(main) {
+
+  const { quiz, personalityScores } = quizState;
+
+  let topId = null, topCount = -1;
+
+  Object.entries(personalityScores).forEach(([id, count]) => { if (count > topCount) { topCount = count; topId = id; } });
+
+  const result = (quiz.results || []).find(r => r.id === topId) || quiz.results[0];
+
+  if (!result) { showPage('quizzes'); return; }
+
+  main.innerHTML = `<div class="personality-result">
+
+    <div class="personality-result-banner" style="background:${result.color||'#1a1a2e'};"><span>${result.emoji||'🌟'}</span></div>
+
+    <div class="personality-result-label">You are...</div>
+
+    <div class="personality-result-title">${esc(result.label)}</div>
+
+    <div class="personality-result-desc">${esc(result.desc)}</div>
+
+    <div class="personality-result-traits">${(result.traits||[]).map(t=>`<span class="personality-trait">${esc(t)}</span>`).join('')}</div>
+
+    <div class="quiz-result-btns">
+
+      <button class="quiz-result-btn primary" onclick="startQuiz('${quiz.id}')">Try Again</button>
+
+      <button class="quiz-result-btn secondary" onclick="showPage('quizzes')">All Quizzes</button>
+
+    </div>
+
+  </div>`;
+
+}
+
+
+
+function renderStatsPage(main) {
+
+  const all = getAllQuizzes();
+
+  const totalPlays = Object.values(quizStats).reduce((s,r) => s + (r.plays||0), 0);
+
+  let html = `<div class="stats-page">
+
+    <h1>Statistics</h1>
+
+    <p class="stats-sub">Admin overview</p>
+
+    <div class="stats-grid">
+
+      <div class="stat-card"><div class="stat-num">${totalPlays}</div><div class="stat-label">Quiz Plays</div></div>
+
+      <div class="stat-card"><div class="stat-num">${all.length}</div><div class="stat-label">Total Quizzes</div></div>
+
+      <div class="stat-card"><div class="stat-num">${cachedPDFs.length}</div><div class="stat-label">Articles Published</div></div>
+
+    </div>
+
+    <div class="stats-section-title">Quiz Performance</div>
+
+    <table class="stats-table">
+
+      <thead><tr><th>Quiz</th><th>Category</th><th>Questions</th><th>Plays</th></tr></thead>
+
+      <tbody>`;
+
+  all.forEach(q => {
+
+    const s = quizStats[q.id] || { plays: 0 };
+
+    html += `<tr><td><strong>${esc(q.title)}</strong></td><td>${esc(q.category||'')}</td><td style="text-align:center;">${q.questions.length}</td><td style="text-align:center;">${s.plays}</td></tr>`;
+
+  });
+
+  html += `</tbody></table></div>`;
+
+  main.innerHTML = html;
+
+}
+
+
+
+function openQuizEditor(quizId) {
+
+  if (!isAdminMode) return;
+
+  editingQuizId = quizId || null;
+
+  const quiz = quizId ? getAllQuizzes().find(q => q.id === quizId) : null;
+
+  document.getElementById('qzTitle').value = quiz ? quiz.title : '';
+
+  document.getElementById('qzCategory').value = quiz ? (quiz.category||'Custom') : 'World Leaders';
+
+  document.getElementById('qzEmoji').value = quiz ? (quiz.emoji||'🧠') : '🧠';
+
+  document.getElementById('qzColor').value = quiz ? (quiz.color||'#e8001c') : '#e8001c';
+
+  const questionsWrap = document.getElementById('quizEditorQuestions');
+
+  questionsWrap.innerHTML = ''; editorQCount = 0;
+
+  const qs = quiz ? quiz.questions : [{ q:'', options:['','','',''], answer:0 }];
+
+  qs.forEach(q => addEditorQuestion(q));
+
+  document.getElementById('quizEditorModal').classList.add('open');
+
+}
+
+function editQuiz(id) { openQuizEditor(id); }
+
+function closeQuizEditor() { document.getElementById('quizEditorModal').classList.remove('open'); editingQuizId = null; }
+
+document.getElementById('quizEditorModal').addEventListener('click', function(e) { if (e.target === this) closeQuizEditor(); });
+
+
+
+let editorQCount = 0;
+
+function addEditorQuestion(data) {
+
+  const wrap = document.getElementById('quizEditorQuestions');
+
+  const idx = editorQCount++;
+
+  const q = data || { q:'', options:['','','',''], answer:0 };
+
+  const letters = ['A','B','C','D'];
+
+  const div = document.createElement('div');
+
+  div.className = 'quiz-editor-q'; div.dataset.editorIdx = idx;
+
+  div.innerHTML = `<div class="quiz-editor-q-num">Question ${wrap.children.length+1}</div>
+
+    <button class="quiz-editor-del-q" onclick="removeEditorQuestion(this)" title="Remove">✕</button>
+
+    <input type="text" placeholder="Enter question…" value="${esc(q.q)}" class="qz-q-text">
+
+    <div class="quiz-editor-options">
+
+      ${q.options.map((opt,i) => `
+
+        <div class="quiz-editor-opt">
+
+          <input type="radio" name="correct_${idx}" value="${i}" ${q.answer===i?'checked':''}>
+
+          <label>${letters[i]}</label>
+
+          <input type="text" placeholder="Option ${letters[i]}" value="${esc(opt)}" class="qz-opt-${i}">
+
+        </div>`).join('')}
+
+    </div>`;
+
+  wrap.appendChild(div);
+
+}
+
+
+
+function removeEditorQuestion(btn) {
+
+  btn.closest('.quiz-editor-q').remove();
+
+  document.querySelectorAll('.quiz-editor-q-num').forEach((el,i) => { el.textContent = 'Question '+(i+1); });
+
+}
+
+
+
+async function saveQuizFromEditor() {
+
+  const title = document.getElementById('qzTitle').value.trim();
+
+  if (!title) { alert('Please enter a quiz title.'); return; }
+
+  const category = document.getElementById('qzCategory').value;
+
+  const emoji = document.getElementById('qzEmoji').value.trim() || '🧠';
+
+  const color = document.getElementById('qzColor').value;
+
+  const qDivs = document.querySelectorAll('.quiz-editor-q');
+
+  const questions = []; let valid = true;
+
+  qDivs.forEach(div => {
+
+    const qText = div.querySelector('.qz-q-text').value.trim();
+
+    const opts = [0,1,2,3].map(i => div.querySelector('.qz-opt-'+i).value.trim());
+
+    const correctRadio = div.querySelector('input[type=radio]:checked');
+
+    if (!qText || opts.some(o=>!o) || !correctRadio) { valid = false; return; }
+
+    questions.push({ q: qText, options: opts, answer: parseInt(correctRadio.value) });
+
+  });
+
+  if (!valid || !questions.length) { alert('Please complete all questions and mark a correct answer for each.'); return; }
+
+  const payload = { title, category, emoji, color, questions: JSON.stringify(questions) };
+
+  try {
+
+    if (editingQuizId && !PREMADE_QUIZZES.find(q=>q.id===editingQuizId)) {
+
+      await sbFetch('quizzes?id=eq.' + encodeURIComponent(editingQuizId), { method: 'PATCH', body: payload, prefer: 'return=minimal' });
+
+      const idx = cachedQuizzes.findIndex(q=>q.id===editingQuizId);
+
+      if (idx>-1) cachedQuizzes[idx] = { ...cachedQuizzes[idx], ...payload, questions };
+
+    } else {
+
+      const result = await sbFetch('quizzes', { method: 'POST', body: payload });
+
+      const saved = result[0] || { ...payload, id: 'quiz_'+Date.now() };
+
+      saved.questions = questions;
+
+      cachedQuizzes.unshift(saved);
+
+    }
+
+  } catch(e) { alert('Save failed: ' + e.message); return; }
+
+  closeQuizEditor(); showPage('quizzes');
+
+}
+
+
+
+async function deleteQuiz(id) {
+
+  if (!isAdminMode) return;
+
+  if (!confirm('Delete this quiz?')) return;
+
+  try {
+
+    await sbFetch('quizzes?id=eq.' + encodeURIComponent(id), { method: 'DELETE', prefer: 'return=minimal' });
+
+    cachedQuizzes = cachedQuizzes.filter(q => String(q.id) !== String(id));
+
+  } catch(e) { alert('Delete failed: ' + e.message); return; }
+
+  showPage('quizzes');
+
+}
+
+
+
+function initMobileAndSite() { buildMobileNav(); init(); loadQuizzes(); }
+
 initMobileAndSite();
+
 </script>
+
 </body>
+
 </html>
